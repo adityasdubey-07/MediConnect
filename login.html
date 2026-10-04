@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    if (window.location.protocol === "file:") {
+      const localBase = document.createElement("base");
+      localBase.href = "http://localhost:3000/";
+      document.head.appendChild(localBase);
+    }
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediConnect | Secure Access</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    .auth-page {
+      display: grid;
+      min-height: calc(100vh - 70px);
+      place-items: center;
+      padding: 40px 18px 60px;
+    }
+
+    .auth-shell {
+      background: rgba(8, 35, 51, 0.95);
+      border: 1px solid rgba(193, 224, 232, 0.18);
+      border-radius: 16px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+      max-width: 560px;
+      padding: 31px;
+      width: 100%;
+    }
+
+    .auth-heading {
+      margin-bottom: 23px;
+      text-align: center;
+    }
+
+    .auth-heading p:first-child {
+      color: #78dfc5;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .auth-heading h1 {
+      color: #f4f8fa;
+      font-size: 1.9rem;
+      margin: 0 0 8px;
+    }
+
+    .auth-heading p:last-child {
+      color: #a9bbc5;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .auth-tabs {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin-bottom: 21px;
+      padding: 4px;
+    }
+
+    .auth-tab {
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+      color: #a9bbc5;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 10px;
+    }
+
+    .auth-tab.active {
+      background: #a8f2dc;
+      color: #123e40;
+    }
+
+    .auth-form {
+      display: none;
+    }
+
+    .auth-form.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      color: #c8d9de;
+      display: block;
+      font-size: 0.73rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: rgba(0, 0, 0, 0.19);
+      border: 1px solid rgba(193, 224, 232, 0.2);
+      border-radius: 7px;
+      color: #f4f8fa;
+      outline: none;
+      padding: 11px 12px;
+      width: 100%;
+    }
+
+    .form-group textarea {
+      min-height: 75px;
+      resize: vertical;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #78919d;
+    }
+
+    .form-group select option {
+      background: #edf6f5;
+      color: #122b3a;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: #2bb89b;
+      box-shadow: 0 0 0 3px rgba(43, 184, 155, 0.12);
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 0 12px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .form-grid .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .provider-fields {
+      border-top: 1px solid rgba(193, 224, 232, 0.14);
+      margin-top: 18px;
+      padding-top: 17px;
+    }
+
+    .provider-fields h2 {
+      color: #78dfc5;
+      font-size: 0.88rem;
+      margin: 0 0 15px;
+    }
+
+    .upload-field {
+      background: rgba(43, 184, 155, 0.06);
+      border: 1px dashed rgba(120, 223, 197, 0.34);
+      border-radius: 7px;
+      padding: 11px;
+    }
+
+    .upload-field small {
+      color: #78919d;
+      display: block;
+      font-size: 0.66rem;
+      line-height: 1.5;
+      margin-bottom: 7px;
+    }
+
+    .upload-field input {
+      border: 0;
+      padding: 0;
+    }
+
+    .auth-submit {
+      background: #a8f2dc;
+      border: 0;
+      border-radius: 7px;
+      color: #123e40;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-top: 7px;
+      padding: 12px;
+      width: 100%;
+    }
+
+    .auth-submit:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .form-message {
+      border-radius: 7px;
+      display: none;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      margin-bottom: 14px;
+      padding: 10px;
+    }
+
+    .form-message.show {
+      display: block;
+    }
+
+    .form-message.error {
+      background: rgba(185, 28, 28, 0.15);
+      color: #fecaca;
+    }
+
+    .form-message.success {
+      background: rgba(21, 128, 61, 0.15);
+      color: #bbf7d0;
+    }
+
+    .auth-note {
+      color: #78919d;
+      font-size: 0.67rem;
+      line-height: 1.6;
+      margin: 18px 0 0;
+      text-align: center;
+    }
+
+    .admin-access-link {
+      color: #78dfc5;
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-top: 10px;
+      text-decoration: none;
+    }
+
+    .admin-access-link:hover {
+      color: #a8f2dc;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 560px) {
+      .auth-shell {
+        padding: 23px 17px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid .form-group.full {
+        grid-column: auto;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="site-shell.css">
+</head>
+
+<body>
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="doctors.html">Find Care</a></li>
+      <li><a href="vaccination.html">Vaccination Updates</a></li>
+      <li><a href="chatbot.html">AI Chatbot</a></li>
+      <li><a href="habits.html">Healthy Habits</a></li>
+    </ul>
+
+    <div class="language-switcher">
+      <label for="languageSelect">Language</label>
+      <select id="languageSelect" onchange="changeLanguage(this.value)">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी — Hindi</option>
+        <option value="mr">मराठी — Marathi</option>
+        <option value="gu">ગુજરાતી — Gujarati</option>
+        <option value="ur">اردو — Urdu</option>
+        <option value="ta">தமிழ் — Tamil</option>
+        <option value="te">తెలుగు — Telugu</option>
+        <option value="ml">മലയാളം — Malayalam</option>
+        <option value="kn">ಕನ್ನಡ — Kannada</option>
+        <option value="bn">বাংলা — Bengali</option>
+        <option value="pa">ਪੰਜਾਬੀ — Punjabi</option>
+      </select>
+    </div>
+  </nav>
+
+  <main class="auth-page">
+    <section class="auth-shell">
+      <div class="auth-heading">
+        <p>Secure access</p>
+        <h1>MediConnect</h1>
+        <p>
+          Sign in to manage your account or register as a healthcare provider.
+        </p>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-auth-tab="login">Sign in</button>
+        <button class="auth-tab" data-auth-tab="register">Create account</button>
+      </div>
+
+      <div id="formMessage" class="form-message"></div>
+
+      <form id="loginForm" class="auth-form active">
+        <div class="form-group">
+          <label for="loginCategory">Sign in as</label>
+          <select id="loginCategory" required>
+            <option value="patient">Patient</option>
+            <option value="doctor">Doctor</option>
+            <option value="hospital">Hospital</option>
+            <option value="clinic">Clinic</option>
+            <option value="ngo">Healthcare NGO</option>
+            <option value="admin">Administrator</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="loginEmail">Email address</label>
+          <input id="loginEmail" type="email" required autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" type="password" required autocomplete="current-password" />
+        </div>
+
+        <button class="auth-submit" type="submit" id="loginButton">
+          Sign in
+        </button>
+      </form>
+
+      <form id="registerForm" class="auth-form" enctype="multipart/form-data">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="accountType">Account type</label>
+            <select id="accountType" name="accountType" required>
+              <option value="patient">Patient</option>
+              <option value="doctor">Doctor</option>
+              <option value="hospital">Hospital</option>
+            <option value="clinic">Clinic</option>
+              <option value="clinic">Clinic</option>
+              <option value="ngo">Healthcare NGO</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="registerName">Full name / organization</label>
+            <input id="registerName" name="name" type="text" required />
+          </div>
+
+          <div class="form-group">
+            <label for="registerEmail">Email address</label>
+            <input id="registerEmail" name="email" type="email" required autocomplete="email" />
+          </div>
+
+          <div class="form-group">
+            <label for="registerPhone">Phone number</label>
+            <input id="registerPhone" name="phone" type="tel" required />
+          </div>
+
+          <div class="form-group full">
+            <label for="registerPassword">Password</label>
+            <input id="registerPassword" name="password" type="password" minlength="8" required autocomplete="new-password" />
+          </div>
+        </div>
+
+        <div class="provider-fields" id="providerFields" hidden>
+          <h2>Provider information</h2>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="providerSpeciality">Speciality / service</label>
+              <input id="providerSpeciality" name="speciality" type="text" />
+            </div>
+
+            <div class="form-group">
+              <label for="providerRegistration">License / registration number</label>
+              <input id="providerRegistration" name="registrationNumber" type="text" />
+            </div>
+
+            <div class="form-group">
+              <label for="providerExperience">Experience in years</label>
+              <input id="providerExperience" name="experience" type="number" min="0" />
+            </div>
+
+            <div class="form-group">
+              <label for="providerLanguages">Languages spoken</label>
+              <input id="providerLanguages" name="languages" type="text" placeholder="English, Hindi, Marathi" />
+            </div>
+
+            <div class="form-group full">
+              <label for="providerAddress">Complete address</label>
+              <textarea id="providerAddress" name="address"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="providerCity">City</label>
+              <input id="providerCity" name="city" type="text" />
+            </div>
+
+            <div class="form-group">
+              <label for="providerState">State</label>
+              <input id="providerState" name="state" type="text" />
+            </div>
+
+            <div class="form-group">
+              <label for="providerPincode">Pincode</label>
+              <input id="providerPincode" name="pincode" type="text" />
+            </div>
+
+            <div class="form-group">
+              <label for="providerMode">Consultation mode</label>
+              <select id="providerMode" name="consultationMode">
+                <option value="Clinic Visit">Clinic Visit</option>
+                <option value="Online Consultation">Online Consultation</option>
+                <option value="Home Visit">Home Visit</option>
+                <option value="Multiple Modes">Multiple Modes</option>
+              </select>
+            </div>
+
+            <div class="form-group full">
+              <label for="providerLicense">License / registration certificate</label>
+              <div class="upload-field">
+                <small>
+                  Upload a valid document in PDF, JPG or PNG format. Maximum size: 5 MB.
+                </small>
+                <input id="providerLicense" name="licenseFile" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="auth-submit" type="submit" id="registerButton">
+          Create account
+        </button>
+      </form>
+
+      <p class="auth-note">
+        Provider profiles remain unavailable in the public directory until administrative verification is complete.
+        <br>
+        <span>Use the appropriate workspace after verification:</span>
+        <span class="workspace-links">
+          <a class="workspace-link" href="login.html?redirect=doctor-dashboard.html">Doctor dashboard</a>
+          <a class="workspace-link" href="login.html?redirect=ngo-dashboard.html">NGO dashboard</a>
+        </span>
+        <a class="admin-access-link" href="login.html?redirect=admin-panel.html">
+          Administrator access
+        </a>
+      </p>
+    </section>
+  </main>
+
+  <div id="google_translate_element"></div>
+
+  <script>
+    const formMessage = document.getElementById("formMessage");
+
+    function showMessage(message, type) {
+      formMessage.textContent = message;
+      formMessage.className = `form-message show ${type}`;
+    }
+
+    function clearMessage() {
+      formMessage.textContent = "";
+      formMessage.className = "form-message";
+    }
+
+    function redirectForUser(user) {
+      const role = String(user?.role || "").toLowerCase();
+      const landingPages = {
+        admin: "admin-panel.html",
+        super_admin: "admin-panel.html",
+        doctor: "doctor-dashboard.html",
+        ngo: "ngo-dashboard.html",
+        hospital: "provider-dashboard.html",
+        clinic: "provider-dashboard.html",
+        patient: "index.html"
+      };
+      const roleLandingPage = landingPages[role] || "index.html";
+      const selectedRole = document.getElementById("loginCategory")?.value || "";
+      const selectedRoleMatches = selectedRole === "admin"
+        ? ["admin", "super_admin"].includes(role)
+        : selectedRole === role;
+
+      // The selected category is authoritative for the normal login flow.
+      // This prevents an old redirect query from sending a Doctor or NGO to Home.
+      if (selectedRoleMatches) {
+        window.location.href = roleLandingPage;
+        return;
+      }
+
+      const redirect = new URLSearchParams(window.location.search).get("redirect");
+      const allowedRedirects = new Set([
+        "index.html",
+        "doctors.html",
+        "chatbot.html",
+        "habits.html",
+        "provider-dashboard.html",
+        "doctor-dashboard.html",
+        "ngo-dashboard.html",
+        "admin-panel.html"
+      ]);
+
+      if (redirect && allowedRedirects.has(redirect)) {
+        const isAdmin = ["admin", "super_admin"].includes(role);
+        const isProvider = ["doctor", "hospital", "clinic", "ngo"].includes(role);
+        const canUseRedirect = redirect === "admin-panel.html"
+          ? isAdmin
+          : ["provider-dashboard.html", "doctor-dashboard.html", "ngo-dashboard.html"].includes(redirect)
+            ? isProvider
+            : true;
+
+        if (canUseRedirect) {
+          window.location.href = redirect;
+          return;
+        }
+      }
+
+      window.location.href = roleLandingPage;
+    }
+
+    function syncLoginCategoryFromRedirect() {
+      const redirect = new URLSearchParams(window.location.search).get("redirect");
+      const category = document.getElementById("loginCategory");
+      const redirectCategory = {
+        "admin-panel.html": "admin",
+        "doctor-dashboard.html": "doctor",
+        "ngo-dashboard.html": "ngo",
+        "provider-dashboard.html": "hospital"
+      }[redirect];
+
+      if (redirectCategory && category.querySelector(`option[value="${redirectCategory}"]`)) {
+        category.value = redirectCategory;
+      }
+    }
+
+    syncLoginCategoryFromRedirect();
+
+    document.querySelectorAll(".auth-tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const selected = tab.dataset.authTab;
+
+        document.querySelectorAll(".auth-tab").forEach((item) => {
+          item.classList.toggle("active", item === tab);
+        });
+
+        document.querySelectorAll(".auth-form").forEach((form) => {
+          form.classList.toggle(
+            "active",
+            form.id === `${selected}Form`
+          );
+        });
+
+        clearMessage();
+      });
+    });
+
+    document.getElementById("accountType").addEventListener("change", (event) => {
+      const isProvider = event.target.value !== "patient";
+      const providerFields = document.getElementById("providerFields");
+
+      providerFields.hidden = !isProvider;
+
+      providerFields.querySelectorAll("input, textarea, select").forEach((field) => {
+        if (field.id === "providerLicense") {
+          field.required = isProvider;
+          return;
+        }
+
+        field.required = isProvider;
+      });
+    });
+
+    document.getElementById("loginForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      clearMessage();
+
+      const button = document.getElementById("loginButton");
+      button.disabled = true;
+      button.textContent = "Signing in...";
+
+      try {
+        const response = await fetch("/api/auth/login", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            role: document.getElementById("loginCategory").value,
+            email: document.getElementById("loginEmail").value,
+            password: document.getElementById("loginPassword").value
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Sign in failed.");
+        }
+
+        redirectForUser(data.user);
+      } catch (error) {
+        showMessage(error.message, "error");
+      } finally {
+        button.disabled = false;
+        button.textContent = "Sign in";
+      }
+    });
+
+    document.getElementById("registerForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      clearMessage();
+
+      const button = document.getElementById("registerButton");
+      button.disabled = true;
+      button.textContent = "Creating account...";
+
+      try {
+        const formData = new FormData(event.target);
+
+        const response = await fetch("/api/auth/register", {
+          method: "POST",
+          credentials: "include",
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Registration failed.");
+        }
+
+        showMessage(data.message, "success");
+        event.target.reset();
+        document.getElementById("providerFields").hidden = true;
+      } catch (error) {
+        showMessage(error.message, "error");
+      } finally {
+        button.disabled = false;
+        button.textContent = "Create account";
+      }
+    });
+
+    async function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {
+          pageLanguage: "en",
+          includedLanguages: "en,hi,mr,gu,ur,ta,te,ml,kn,bn,pa",
+          autoDisplay: false
+        },
+        "google_translate_element"
+      );
+    }
+
+    function changeLanguage(languageCode, attempt = 0) {
+      const googleDropdown = document.querySelector(".goog-te-combo");
+
+      if (googleDropdown) {
+        googleDropdown.value = languageCode;
+        googleDropdown.dispatchEvent(new Event("change"));
+        return;
+      }
+
+      if (attempt < 10) {
+        setTimeout(() => changeLanguage(languageCode, attempt + 1), 400);
+      }
+    }
+  </script>
+
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script src="site-shell.js"></script>
+</body>
+</html>

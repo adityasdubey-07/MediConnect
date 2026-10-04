@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    if (window.location.protocol === "file:") {
+      const localBase = document.createElement("base");
+      localBase.href = "http://localhost:3000/";
+      document.head.appendChild(localBase);
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>MediGuide | MediConnect Health Assistant</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root {
+      --bg: #061b1d;
+      --bg-light: #0a3030;
+      --panel: rgba(9, 43, 44, 0.86);
+      --panel-light: rgba(255, 255, 255, 0.06);
+      --text: #edf8f4;
+      --muted: #a9c7c1;
+      --soft: #789893;
+      --green: #8be0c2;
+      --green-dark: #4fc9a2;
+      --border: rgba(180, 235, 218, 0.18);
+      --danger: #ffaaaa;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--text);
+      background:
+        radial-gradient(
+          circle at 85% 5%,
+          rgba(79, 201, 162, 0.2),
+          transparent 30%
+        ),
+        linear-gradient(
+          180deg,
+          var(--bg-light),
+          var(--bg) 75%
+        );
+      font-family: "Poppins", sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Navbar */
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      min-height: 70px;
+      padding: 14px clamp(15px, 4vw, 55px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(5, 27, 28, 0.82);
+      backdrop-filter: blur(16px);
+    }
+
+    .navbar ul {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: clamp(14px, 2.5vw, 32px);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .navbar a {
+      position: relative;
+      color: #c3ddd8;
+      text-decoration: none;
+      font-size: 0.84rem;
+      font-weight: 600;
+      transition: 0.25s ease;
+    }
+
+    .navbar a:hover,
+    .navbar a.active {
+      color: var(--green);
+    }
+
+    .navbar a.active::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: -9px;
+      left: 0;
+      height: 2px;
+      border-radius: 5px;
+      background: var(--green);
+    }
+
+    /* Language Selector */
+
+    .language-switcher {
+      position: absolute;
+      right: clamp(15px, 4vw, 55px);
+      top: 50%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.73rem;
+      font-weight: 600;
+      transform: translateY(-50%);
+    }
+
+    .language-switcher select {
+      max-width: 145px;
+      padding: 8px 10px;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.08);
+      font-family: inherit;
+      font-size: 0.73rem;
+      cursor: pointer;
+    }
+
+    .language-switcher option {
+      color: #14322f;
+      background: #eaf7f3;
+    }
+
+    /* Page */
+
+    .page {
+      width: min(1100px, calc(100% - 30px));
+      margin: 0 auto;
+      padding: 52px 0 25px;
+    }
+
+    .page-heading {
+      margin-bottom: 28px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 11px;
+      color: var(--green);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .page-heading h1 {
+      margin: 0;
+      font-size: clamp(2.3rem, 6vw, 4.4rem);
+      line-height: 1;
+      letter-spacing: -0.07em;
+    }
+
+    .page-heading h1 span {
+      color: var(--green);
+    }
+
+    .page-heading p:last-child {
+      max-width: 620px;
+      margin: 17px auto 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    /* Main Layout */
+
+    .assistant-layout {
+      display: grid;
+      grid-template-columns: 0.72fr 1.28fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .assistant-info,
+    .chat-panel {
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: var(--panel);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+    }
+
+    /* Assistant Card */
+
+    .assistant-info {
+      padding: 30px 25px;
+    }
+
+    .assistant-avatar {
+      display: grid;
+      width: 68px;
+      height: 68px;
+      margin-bottom: 22px;
+      place-items: center;
+      color: #082423;
+      border-radius: 21px;
+      background: var(--green);
+      font-size: 2rem;
+      box-shadow: 0 12px 30px rgba(79, 201, 162, 0.18);
+    }
+
+    .assistant-info h2 {
+      margin: 0 0 10px;
+      font-size: 1.35rem;
+      letter-spacing: -0.04em;
+    }
+
+    .assistant-info > p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.7;
+    }
+
+    .status-line {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 24px 0;
+      color: var(--green);
+      font-size: 0.76rem;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green-dark);
+      box-shadow: 0 0 0 5px rgba(79, 201, 162, 0.12);
+    }
+
+    .voice-settings {
+      padding: 17px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--panel-light);
+    }
+
+    .voice-settings h3 {
+      margin: 0 0 14px;
+      font-size: 0.88rem;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin: 13px 0;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .toggle {
+      position: relative;
+      width: 39px;
+      height: 21px;
+    }
+
+    .toggle input {
+      width: 0;
+      height: 0;
+      opacity: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      background: #345451;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    .toggle-slider::before {
+      position: absolute;
+      bottom: 3px;
+      left: 3px;
+      width: 15px;
+      height: 15px;
+      content: "";
+      border-radius: 50%;
+      background: white;
+      transition: 0.25s ease;
+    }
+
+    .toggle input:checked + .toggle-slider {
+      background: var(--green-dark);
+    }
+
+    .toggle input:checked + .toggle-slider::before {
+      transform: translateX(18px);
+    }
+
+    .language-note {
+      margin-top: 22px !important;
+      color: var(--soft) !important;
+      font-size: 0.7rem !important;
+      line-height: 1.6 !important;
+    }
+
+    /* Chat Panel */
+
+    .chat-panel {
+      display: flex;
+      min-height: 625px;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 19px 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .chat-title {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .mini-avatar {
+      display: grid;
+      width: 37px;
+      height: 37px;
+      place-items: center;
+      border-radius: 12px;
+      background: rgba(139, 224, 194, 0.15);
+      font-size: 1.1rem;
+    }
+
+    .chat-title strong,
+    .chat-title small {
+      display: block;
+    }
+
+    .chat-title strong {
+      font-size: 0.87rem;
+    }
+
+    .chat-title small {
+      margin-top: 2px;
+      color: var(--green);
+      font-size: 0.65rem;
+    }
+
+    .clear-button {
+      padding: 7px 10px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: transparent;
+      font-family: inherit;
+      font-size: 0.68rem;
+      cursor: pointer;
+    }
+
+    .clear-button:hover {
+      color: var(--green);
+      border-color: var(--green);
+    }
+
+    .messages {
+      display: flex;
+      flex: 1;
+      min-height: 390px;
+      max-height: 480px;
+      flex-direction: column;
+      gap: 14px;
+      padding: 22px;
+      overflow-y: auto;
+    }
+
+    .message {
+      display: flex;
+      max-width: 87%;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      align-items: flex-end;
+    }
+
+    .message.assistant {
+      align-self: flex-start;
+      align-items: flex-start;
+    }
+
+    .message-bubble {
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+
+    .message.assistant .message-bubble {
+      border-top-left-radius: 4px;
+      background: rgba(255, 255, 255, 0.065);
+    }
+
+    .message.user .message-bubble {
+      border-top-right-radius: 4px;
+      color: #082423;
+      border-color: transparent;
+      background: var(--green);
+    }
+
+    .message-time {
+      padding: 0 4px;
+      color: var(--soft);
+      font-size: 0.62rem;
+    }
+
+    .typing {
+      display: none;
+      align-items: center;
+      gap: 5px;
+      padding: 9px 21px;
+      color: var(--muted);
+      font-size: 0.7rem;
+    }
+
+    .typing.show {
+      display: flex;
+    }
+
+    .typing span {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: bounce 1s infinite alternate;
+    }
+
+    .typing span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes bounce {
+      from {
+        opacity: 0.3;
+        transform: translateY(0);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(-4px);
+      }
+    }
+
+    /* Suggestions */
+
+    .suggestions {
+      display: flex;
+      gap: 7px;
+      padding: 0 20px 12px;
+      overflow-x: auto;
+    }
+
+    .suggestions button {
+      flex-shrink: 0;
+      padding: 8px 11px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.04);
+      font-family: inherit;
+      font-size: 0.68rem;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .suggestions button:hover {
+      color: var(--green);
+      border-color: var(--green);
+      background: rgba(139, 224, 194, 0.08);
+    }
+
+    /* Input */
+
+    .input-area {
+      display: flex;
+      align-items: flex-end;
+      gap: 9px;
+      padding: 15px 18px 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .input-wrapper {
+      position: relative;
+      flex: 1;
+    }
+
+    #messageInput {
+      width: 100%;
+      min-height: 45px;
+      max-height: 115px;
+      resize: none;
+      padding: 13px 45px 13px 14px;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      outline: none;
+      background: rgba(0, 0, 0, 0.18);
+      font-family: inherit;
+      font-size: 0.8rem;
+    }
+
+    #messageInput::placeholder {
+      color: #789893;
+    }
+
+    #messageInput:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(79, 201, 162, 0.1);
+    }
+
+    .mic-button {
+      position: absolute;
+      right: 7px;
+      bottom: 7px;
+      display: grid;
+      width: 31px;
+      height: 31px;
+      place-items: center;
+      color: var(--muted);
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .mic-button:hover,
+    .mic-button.listening {
+      color: #082423;
+      background: var(--green);
+    }
+
+    .send-button {
+      display: grid;
+      width: 46px;
+      height: 45px;
+      place-items: center;
+      color: #082423;
+      border: 0;
+      border-radius: 11px;
+      background: var(--green);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .send-button:hover {
+      background: #b6f1dc;
+      transform: translateY(-2px);
+    }
+
+    .send-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .voice-status {
+      min-height: 17px;
+      padding: 0 20px 8px;
+      color: var(--green);
+      font-size: 0.67rem;
+    }
+
+    .disclaimer {
+      width: min(1100px, calc(100% - 30px));
+      margin: 0 auto;
+      padding: 10px;
+      color: var(--soft);
+      text-align: center;
+      font-size: 0.68rem;
+      line-height: 1.5;
+    }
+
+    footer {
+      padding: 20px 15px 30px;
+      color: var(--soft);
+      text-align: center;
+      font-size: 0.73rem;
+    }
+
+    @media (max-width: 850px) {
+      .navbar {
+        padding: 12px 15px;
+        flex-wrap: wrap;
+        gap: 13px;
+      }
+
+      .navbar ul {
+        order: 3;
+        flex-basis: 100%;
+        gap: 14px 18px;
+      }
+
+      .language-switcher {
+        position: static;
+        margin-left: auto;
+        transform: none;
+      }
+
+      .assistant-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .assistant-info {
+        padding: 24px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        width: calc(100% - 20px);
+        padding-top: 42px;
+      }
+
+      .language-switcher label {
+        display: none;
+      }
+
+      .navbar ul a {
+        font-size: 0.72rem;
+      }
+
+      .chat-panel {
+        min-height: 600px;
+      }
+
+      .chat-header {
+        padding: 15px;
+      }
+
+      .messages {
+        padding: 17px 14px;
+      }
+
+      .message {
+        max-width: 93%;
+      }
+
+      .input-area {
+        padding: 12px;
+      }
+    }
+    .doctor-connect-panel {
+      margin-top: 22px;
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--panel);
+    }
+
+    .doctor-connect-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 17px;
+    }
+
+    .doctor-connect-heading h2 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .doctor-connect-heading p:not(.eyebrow) {
+      max-width: 680px;
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: .78rem;
+      line-height: 1.6;
+    }
+
+    .directory-link {
+      flex-shrink: 0;
+      color: var(--green);
+      font-size: .75rem;
+      font-weight: 700;
+    }
+
+    .doctor-connect-form {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr auto;
+      gap: 9px;
+    }
+
+    .doctor-connect-form input,
+    .doctor-connect-form select {
+      min-width: 0;
+      padding: 11px;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      background: rgba(0,0,0,.17);
+      font-family: inherit;
+      font-size: .76rem;
+    }
+
+    .doctor-connect-button {
+      padding: 0 15px;
+      color: #082423;
+      border: 0;
+      border-radius: 8px;
+      background: var(--green);
+      font-size: .76rem;
+      font-weight: 700;
+    }
+
+    .doctor-connect-results {
+      display: grid;
+      gap: 9px;
+      margin-top: 15px;
+      color: var(--muted);
+      font-size: .76rem;
+      line-height: 1.5;
+    }
+
+    .connect-provider {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: rgba(255,255,255,.04);
+    }
+
+    .connect-provider strong,
+    .connect-provider small {
+      display: block;
+    }
+
+    .connect-provider strong {
+      color: var(--text);
+      font-size: .8rem;
+    }
+
+    .connect-provider small {
+      margin-top: 3px;
+      color: var(--muted);
+    }
+
+    .connect-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .connect-actions a {
+      padding: 7px 10px;
+      border-radius: 7px;
+      font-size: .7rem;
+      font-weight: 700;
+    }
+
+    .connect-call {
+      color: #082423;
+      background: var(--green);
+    }
+
+    .connect-message {
+      color: var(--green);
+      border: 1px solid rgba(139,224,194,.26);
+    }
+
+    @media (max-width: 850px) {
+      .doctor-connect-form { grid-template-columns: 1fr 1fr; }
+      .doctor-connect-button { min-height: 42px; }
+    }
+
+    .patient-conversation-layout {
+      display: grid;
+      grid-template-columns: .75fr 1.25fr;
+      gap: 10px;
+    }
+
+    .patient-conversation-list,
+    .patient-conversation-thread {
+      min-height: 150px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: var(--muted);
+      font-size: .75rem;
+    }
+
+    .patient-conversation-item {
+      display: block;
+      width: 100%;
+      margin-bottom: 6px;
+      padding: 9px;
+      color: var(--text);
+      border: 1px solid transparent;
+      border-radius: 7px;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .patient-conversation-item:hover,
+    .patient-conversation-item.active {
+      border-color: rgba(139,224,194,.3);
+      background: rgba(139,224,194,.08);
+    }
+
+    .patient-conversation-item strong,
+    .patient-conversation-item small { display: block; }
+    .patient-conversation-item small { margin-top: 3px; color: var(--muted); }
+    .patient-thread-message { margin: 6px 0; padding: 8px 10px; border-radius: 7px; background: rgba(255,255,255,.05); line-height: 1.5; }
+    .patient-thread-message.mine { background: rgba(139,224,194,.15); }
+    .patient-thread-composer { display: flex; gap: 7px; margin-top: 10px; }
+    .patient-thread-composer textarea { flex: 1; min-height: 40px; padding: 8px; color: var(--text); border: 1px solid var(--border); border-radius: 7px; background: rgba(0,0,0,.16); }
+
+    @media (max-width: 560px) {
+      .patient-conversation-layout { grid-template-columns: 1fr; }
+      .doctor-connect-heading { display: block; }
+      .directory-link { display: inline-block; margin-top: 12px; }
+      .doctor-connect-form { grid-template-columns: 1fr; }
+      .connect-provider { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+  <link rel="stylesheet" href="site-shell.css">
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <ul>
+      <li>
+        <a href="index.html">Home</a>
+      </li>
+
+      <li>
+        <a href="vaccination.html">Vaccination Updates</a>
+      </li>
+
+      <li>
+        <a href="chatbot.html" class="active">MediGuide</a>
+      </li>
+
+      <li>
+        <a href="habits.html">Healthy Habits</a>
+      </li>
+
+      <li id="adminNavItem" hidden>
+        <a href="admin-panel.html">Admin Panel</a>
+      </li>
+    </ul>
+
+    <!-- Response Language -->
+    <div class="language-switcher">
+      <label for="languageSelect">Language</label>
+
+      <select id="languageSelect">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी — Hindi</option>
+        <option value="mr">मराठी — Marathi</option>
+        <option value="gu">ગુજરાતી — Gujarati</option>
+        <option value="bn">বাংলা — Bengali</option>
+        <option value="ta">தமிழ் — Tamil</option>
+        <option value="te">తెలుగు — Telugu</option>
+        <option value="kn">ಕನ್ನಡ — Kannada</option>
+        <option value="ml">മലയാളം — Malayalam</option>
+        <option value="pa">ਪੰਜਾਬੀ — Punjabi</option>
+        <option value="ur">اردو — Urdu</option>
+        <option value="es">Español — Spanish</option>
+        <option value="fr">Français — French</option>
+        <option value="de">Deutsch — German</option>
+        <option value="ar">العربية — Arabic</option>
+        <option value="pt">Português — Portuguese</option>
+        <option value="auto">Other language — type your question</option>
+      </select>
+    </div>
+  </nav>
+
+  <script>
+    fetch("/api/auth/me", { credentials: "include" })
+      .then((response) => response.ok ? response.json() : null)
+      .then((user) => {
+        if (user && ["admin", "super_admin"].includes(user.role)) {
+          document.getElementById("adminNavItem").hidden = false;
+        }
+      })
+      .catch(() => {});
+  </script>
+
+  <main class="page">
+
+    <!-- Page Heading -->
+    <header class="page-heading">
+      <p class="eyebrow">Private, simple and easy to use</p>
+
+      <h1>
+        Your <span>MediGuide</span>
+      </h1>
+
+      <p>
+        Ask about symptoms, wellness, nutrition, exercise, sleep, medicines,
+        preventive care and other health topics. You can type or speak.
+      </p>
+    </header>
+
+
+    <section class="assistant-layout">
+
+      <!-- Assistant Information -->
+      <aside class="assistant-info">
+        <div class="assistant-avatar">✦</div>
+
+        <h2>Hello, I’m MediGuide.</h2>
+
+        <p>
+          I can explain health topics in simple language and help you think
+          about useful next steps.
+        </p>
+
+        <div class="status-line">
+          <span class="status-dot"></span>
+          AI assistant ready
+        </div>
+
+        <div class="voice-settings">
+          <h3>Voice settings</h3>
+
+          <div class="setting-row">
+            <span>Speak AI answers</span>
+
+            <label class="toggle">
+              <input
+                type="checkbox"
+                id="voiceToggle"
+                checked
+              >
+
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <span>Send voice message automatically</span>
+
+            <label class="toggle">
+              <input
+                type="checkbox"
+                id="autoSendToggle"
+              >
+
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <p class="language-note">
+          Select your response language from the top-right menu. Browser voice
+          support depends on your browser and device.
+        </p>
+      </aside>
+
+
+      <!-- Chat Panel -->
+      <section class="chat-panel">
+
+        <div class="chat-header">
+          <div class="chat-title">
+            <div class="mini-avatar">✦</div>
+
+            <div>
+              <strong>MediGuide</strong>
+              <small>General health information</small>
+            </div>
+          </div>
+
+          <button
+            class="clear-button"
+            id="clearButton"
+            type="button"
+          >
+            Clear chat
+          </button>
+        </div>
+
+
+        <!-- Messages -->
+        <div
+          class="messages"
+          id="messages"
+          aria-live="polite"
+        >
+          <div class="message assistant">
+            <div class="message-bubble">
+              Hello! I’m Medi, your AI health assistant. Ask me about any
+              health or wellness topic. You can type your question or tap the
+              microphone to speak.
+            </div>
+
+            <div class="message-time">
+              Just now
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Typing Indicator -->
+        <div
+          class="typing"
+          id="typingIndicator"
+        >
+          Medi is thinking
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+
+        <!-- Suggested Questions -->
+        <div class="suggestions">
+          <button
+            type="button"
+            data-question="What are common signs of dehydration?"
+          >
+            Dehydration signs
+          </button>
+
+          <button
+            type="button"
+            data-question="How can I improve my sleep naturally?"
+          >
+            Better sleep
+          </button>
+
+          <button
+            type="button"
+            data-question="What is a simple exercise routine for beginners?"
+          >
+            Beginner exercise
+          </button>
+
+          <button
+            type="button"
+            data-question="How can I manage daily stress?"
+          >
+            Manage stress
+          </button>
+        </div>
+
+
+        <div
+          class="voice-status"
+          id="voiceStatus"
+          aria-live="polite"
+        ></div>
+
+
+        <!-- Message Input -->
+        <div class="input-area">
+          <div class="input-wrapper">
+            <textarea
+              id="messageInput"
+              rows="1"
+              placeholder="Ask any health question..."
+              aria-label="Type your health question"
+            ></textarea>
+
+            <button
+              class="mic-button"
+              id="micButton"
+              type="button"
+              title="Speak your question"
+              aria-label="Speak your question"
+            >
+              🎙
+            </button>
+          </div>
+
+          <button
+            class="send-button"
+            id="sendButton"
+            type="button"
+            aria-label="Send message"
+          >
+            →
+          </button>
+        </div>
+
+      </section>
+
+    </section>
+
+    <section class="doctor-connect-panel" id="doctorConnect">
+      <div class="doctor-connect-heading">
+        <div>
+          <p class="eyebrow">Care connection</p>
+          <h2>Connect with a verified healthcare provider</h2>
+          <p>Share a general concern and location to find verified providers who may be able to help. MediGuide does not diagnose emergencies.</p>
+        </div>
+        <a class="directory-link" href="doctors.html">Open full directory</a>
+      </div>
+
+      <form class="doctor-connect-form" id="doctorConnectForm">
+        <input id="connectConcern" type="text" placeholder="Concern or speciality, e.g. skin rash or physician" required>
+        <input id="connectCity" type="text" placeholder="City or location">
+        <select id="connectLanguage">
+          <option value="">Any language</option>
+          <option value="English">English</option>
+          <option value="Hindi">Hindi</option>
+          <option value="Hinglish">Hinglish</option>
+          <option value="Marathi">Marathi</option>
+          <option value="Gujarati">Gujarati</option>
+          <option value="Urdu">Urdu</option>
+          <option value="Tamil">Tamil</option>
+          <option value="Telugu">Telugu</option>
+          <option value="Bengali">Bengali</option>
+          <option value="Punjabi">Punjabi</option>
+        </select>
+        <button class="doctor-connect-button" type="submit">Find care</button>
+      </form>
+
+      <div class="doctor-connect-results" id="doctorConnectResults" aria-live="polite">
+        Enter a concern to see verified providers from the live directory.
+      </div>
+    </section>
+
+    <section class="doctor-connect-panel patient-conversations" id="patientConversations">
+      <div class="doctor-connect-heading">
+        <div>
+          <p class="eyebrow">Private care inbox</p>
+          <h2>Your patient conversations</h2>
+          <p>Sign in as a patient to view consultation requests and replies from providers.</p>
+        </div>
+        <button class="doctor-connect-button" type="button" id="loadPatientConversations">Load inbox</button>
+      </div>
+      <div class="patient-conversation-layout">
+        <div class="patient-conversation-list" id="patientConversationList">Your private conversations will appear here.</div>
+        <div class="patient-conversation-thread" id="patientConversationThread">Select a conversation to read messages.</div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <p class="disclaimer">
+    MediConnect provides general health information only. It does not replace
+    a qualified doctor, diagnosis or emergency medical care.
+  </p>
+
+
+  <footer>
+    © 2026 MediConnect | Bridging You to Wellness
+  </footer>
+
+
+  <script>
+    /* Language configuration */
+
+    const languages = {
+      en: {
+        name: "English",
+        speech: "en-IN",
+        recognition: "en-IN"
+      },
+
+      hi: {
+        name: "Hindi",
+        speech: "hi-IN",
+        recognition: "hi-IN"
+      },
+
+      mr: {
+        name: "Marathi",
+        speech: "mr-IN",
+        recognition: "mr-IN"
+      },
+
+      gu: {
+        name: "Gujarati",
+        speech: "gu-IN",
+        recognition: "gu-IN"
+      },
+
+      bn: {
+        name: "Bengali",
+        speech: "bn-IN",
+        recognition: "bn-IN"
+      },
+
+      ta: {
+        name: "Tamil",
+        speech: "ta-IN",
+        recognition: "ta-IN"
+      },
+
+      te: {
+        name: "Telugu",
+        speech: "te-IN",
+        recognition: "te-IN"
+      },
+
+      kn: {
+        name: "Kannada",
+        speech: "kn-IN",
+        recognition: "kn-IN"
+      },
+
+      ml: {
+        name: "Malayalam",
+        speech: "ml-IN",
+        recognition: "ml-IN"
+      },
+
+      pa: {
+        name: "Punjabi",
+        speech: "pa-IN",
+        recognition: "pa-IN"
+      },
+
+      ur: {
+        name: "Urdu",
+        speech: "ur-IN",
+        recognition: "ur-IN"
+      },
+
+      es: {
+        name: "Spanish",
+        speech: "es-ES",
+        recognition: "es-ES"
+      },
+
+      fr: {
+        name: "French",
+        speech: "fr-FR",
+        recognition: "fr-FR"
+      },
+
+      de: {
+        name: "German",
+        speech: "de-DE",
+        recognition: "de-DE"
+      },
+
+      ar: {
+        name: "Arabic",
+        speech: "ar-SA",
+        recognition: "ar-SA"
+      },
+
+      pt: {
+        name: "Portuguese",
+        speech: "pt-PT",
+        recognition: "pt-PT"
+      },
+
+      auto: {
+        name: "Selected language",
+        speech: "en-IN",
+        recognition: "en-IN"
+      }
+    };
+
+
+    let selectedLanguage = "en";
+    let conversation = [];
+    let recognition = null;
+    let isListening = false;
+
+
+    const messages =
+      document.getElementById("messages");
+
+    const messageInput =
+      document.getElementById("messageInput");
+
+    const sendButton =
+      document.getElementById("sendButton");
+
+    const micButton =
+      document.getElementById("micButton");
+
+    const languageSelect =
+      document.getElementById("languageSelect");
+
+    const voiceToggle =
+      document.getElementById("voiceToggle");
+
+    const autoSendToggle =
+      document.getElementById("autoSendToggle");
+
+    const typingIndicator =
+      document.getElementById("typingIndicator");
+
+    const voiceStatus =
+      document.getElementById("voiceStatus");
+
+    const clearButton =
+      document.getElementById("clearButton");
+
+
+    function currentTime() {
+      return new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+
+    function addMessage(text, type) {
+      const message =
+        document.createElement("div");
+
+      message.className =
+        `message ${type}`;
+
+
+      const bubble =
+        document.createElement("div");
+
+      bubble.className =
+        "message-bubble";
+
+      bubble.innerText =
+        text;
+
+
+      const time =
+        document.createElement("div");
+
+      time.className =
+        "message-time";
+
+      time.innerText =
+        currentTime();
+
+
+      message.appendChild(bubble);
+      message.appendChild(time);
+
+      messages.appendChild(message);
+
+      messages.scrollTop =
+        messages.scrollHeight;
+    }
+
+
+    /* Language Change */
+
+    languageSelect.addEventListener(
+      "change",
+      function() {
+        selectedLanguage =
+          languageSelect.value;
+
+        if (recognition) {
+          recognition.lang =
+            languages[selectedLanguage].recognition;
+        }
+
+        voiceStatus.innerText =
+          `${languages[selectedLanguage].name} selected`;
+
+        setTimeout(function() {
+          voiceStatus.innerText =
+            "";
+        }, 2000);
+      }
+    );
+
+
+    /* Speak AI Response */
+
+    function speakText(text) {
+      if (!voiceToggle.checked) {
+        return;
+      }
+
+      if (!("speechSynthesis" in window)) {
+        voiceStatus.innerText =
+          "Voice output is not supported in this browser.";
+
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      const speech =
+        new SpeechSynthesisUtterance(text);
+
+      speech.lang =
+        languages[selectedLanguage].speech;
+
+      speech.rate =
+        0.92;
+
+      speech.pitch =
+        1;
+
+
+      const voices =
+        window.speechSynthesis.getVoices();
+
+      const selectedVoice =
+        voices.find(function(voice) {
+          return voice.lang
+            .toLowerCase()
+            .startsWith(
+              selectedLanguage.toLowerCase()
+            );
+        });
+
+      if (selectedVoice) {
+        speech.voice =
+          selectedVoice;
+      }
+
+      window.speechSynthesis.speak(speech);
+    }
+
+
+    /* Voice Input */
+
+    function setupSpeechRecognition() {
+      const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        micButton.disabled =
+          true;
+
+        micButton.title =
+          "Voice input is not supported in this browser";
+
+        return;
+      }
+
+      recognition =
+        new SpeechRecognition();
+
+      recognition.continuous =
+        false;
+
+      recognition.interimResults =
+        false;
+
+      recognition.lang =
+        languages[selectedLanguage].recognition;
+
+
+      recognition.onstart =
+        function() {
+          isListening =
+            true;
+
+          micButton.classList.add(
+            "listening"
+          );
+
+          voiceStatus.innerText =
+            "Listening... speak now";
+        };
+
+
+      recognition.onresult =
+        function(event) {
+          const transcript =
+            event.results[0][0].transcript;
+
+          messageInput.value =
+            transcript;
+
+          messageInput.dispatchEvent(
+            new Event("input")
+          );
+
+          voiceStatus.innerText =
+            "Voice message captured";
+
+          if (autoSendToggle.checked) {
+            sendMessage();
+          }
+        };
+
+
+      recognition.onerror =
+        function(event) {
+          if (event.error === "not-allowed") {
+            voiceStatus.innerText =
+              "Microphone permission allow karo.";
+          } else {
+            voiceStatus.innerText =
+              "Voice input use nahi ho paaya.";
+          }
+        };
+
+
+      recognition.onend =
+        function() {
+          isListening =
+            false;
+
+          micButton.classList.remove(
+            "listening"
+          );
+        };
+    }
+
+
+    micButton.addEventListener(
+      "click",
+      function() {
+        if (!recognition) {
+          voiceStatus.innerText =
+            "Chrome ya Edge browser use karo.";
+          return;
+        }
+
+        if (isListening) {
+          recognition.stop();
+          return;
+        }
+
+        recognition.lang =
+          languages[selectedLanguage].recognition;
+
+        recognition.start();
+      }
+    );
+
+
+    /* Send Message To Backend */
+
+    async function sendMessage() {
+      const text =
+        messageInput.value.trim();
+
+      if (!text || sendButton.disabled) {
+        return;
+      }
+
+
+      addMessage(text, "user");
+
+      conversation.push({
+        role: "user",
+        content: text
+      });
+
+      messageInput.value =
+        "";
+
+      messageInput.style.height =
+        "45px";
+
+      typingIndicator.classList.add(
+        "show"
+      );
+
+      sendButton.disabled =
+        true;
+
+
+      try {
+        const response =
+          await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              message: text,
+              language: selectedLanguage,
+              history: conversation.slice(-12)
+            })
+          });
+
+
+        const data =
+          await response.json();
+
+
+        if (!response.ok) {
+          throw new Error(
+            data.error || "AI request failed"
+          );
+        }
+
+
+        const reply =
+          data.reply ||
+          "Sorry, mujhe abhi answer nahi mil paaya.";
+
+
+        addMessage(
+          reply,
+          "assistant"
+        );
+
+        conversation.push({
+          role: "assistant",
+          content: reply
+        });
+
+        speakText(reply);
+
+      } catch (error) {
+        const errorMessage =
+          "AI service se connection nahi ho paaya. Check karo ki server.js run ho raha hai.";
+
+        addMessage(
+          errorMessage,
+          "assistant"
+        );
+
+        voiceStatus.innerText =
+          error.message;
+      }
+
+
+      typingIndicator.classList.remove(
+        "show"
+      );
+
+      sendButton.disabled =
+        false;
+    }
+
+
+    sendButton.addEventListener(
+      "click",
+      sendMessage
+    );
+
+
+    messageInput.addEventListener(
+      "keydown",
+      function(event) {
+        if (
+          event.key === "Enter" &&
+          !event.shiftKey
+        ) {
+          event.preventDefault();
+          sendMessage();
+        }
+      }
+    );
+
+
+    messageInput.addEventListener(
+      "input",
+      function() {
+        messageInput.style.height =
+          "45px";
+
+        messageInput.style.height =
+          Math.min(
+            messageInput.scrollHeight,
+            115
+          ) + "px";
+      }
+    );
+
+
+    /* Suggested Questions */
+
+    document
+      .querySelectorAll(".suggestions button")
+      .forEach(function(button) {
+        button.addEventListener(
+          "click",
+          function() {
+            messageInput.value =
+              button.dataset.question;
+
+            messageInput.dispatchEvent(
+              new Event("input")
+            );
+
+            messageInput.focus();
+          }
+        );
+      });
+
+
+    /* Clear Chat */
+
+    clearButton.addEventListener(
+      "click",
+      function() {
+        messages.innerHTML =
+          "";
+
+        conversation =
+          [];
+
+        addMessage(
+          "Chat cleared. What would you like to know?",
+          "assistant"
+        );
+
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+        }
+      }
+    );
+
+
+    setupSpeechRecognition();
+
+    function contactPhone(value) {
+      return String(value || "").trim().replace(/[^\d+]/g, "");
+    }
+
+    function whatsappPhone(value) {
+      const normalized = contactPhone(value);
+      const digits = normalized.replace(/\D/g, "");
+      if (normalized.startsWith("+")) return digits;
+      if (digits.startsWith("00")) return digits.slice(2);
+      return digits.length > 10 ? digits : "";
+    }
+
+    function renderConnectProviders(providers) {
+      const container = document.getElementById("doctorConnectResults");
+      if (!providers.length) {
+        container.textContent = "No verified provider matches this concern and location. Try a broader speciality or open the full directory.";
+        return;
+      }
+
+      container.innerHTML = providers.slice(0, 5).map((provider) => {
+        const phone = contactPhone(provider.phone);
+        const whatsapp = whatsappPhone(provider.messagePhone || provider.phone);
+        const actions = [
+          provider.allowCalls && phone ? `<a class="connect-call" href="tel:${phone}">Call</a>` : "",
+          provider.allowMessages && whatsapp ? `<a class="connect-message" href="https://wa.me/${whatsapp}" target="_blank" rel="noopener noreferrer">WhatsApp</a>` : ""
+        ].join("");
+
+        return `<article class="connect-provider"><div><strong>${escapeHTML(provider.name || "Verified provider")}</strong><small>${escapeHTML(provider.type || "Provider")} · ${escapeHTML(provider.speciality || "General care")} · ${escapeHTML(provider.city || "Location not specified")}</small><small>Languages: ${escapeHTML((provider.languages || []).join(", ") || "Not specified")}</small></div><div class="connect-actions">${actions || "<small>Contact options unavailable</small>"}</div></article>`;
+      }).join("");
+    }
+
+    document.getElementById("doctorConnectForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+      const result = document.getElementById("doctorConnectResults");
+      const concern = document.getElementById("connectConcern").value.trim();
+      const city = document.getElementById("connectCity").value.trim();
+      const language = document.getElementById("connectLanguage").value;
+      const params = new URLSearchParams();
+      if (concern) params.set("search", concern);
+      if (city) params.set("city", city);
+      if (language) params.set("language", language);
+      result.textContent = "Searching verified providers...";
+
+      try {
+        const response = await fetch(`/api/public/providers?${params.toString()}`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || "Provider search failed.");
+        renderConnectProviders(data);
+      } catch (error) {
+        result.textContent = "The verified directory is temporarily unavailable. Please try again or open the full directory.";
+      }
+    });
+
+    let patientConversations = [];
+    let selectedPatientConversation = null;
+
+    async function loadPatientConversations() {
+      const list = document.getElementById("patientConversationList");
+      list.textContent = "Loading private inbox...";
+      try {
+        const response = await fetch("/api/consultations", { credentials: "include" });
+        const data = await response.json();
+        if (response.status === 401) {
+          list.innerHTML = 'Please <a href="login.html?redirect=chatbot.html">sign in as a patient</a> to view your private inbox.';
+          return;
+        }
+        if (!response.ok) throw new Error(data.message || "Inbox could not be loaded.");
+        patientConversations = data;
+        list.innerHTML = patientConversations.length ? patientConversations.map((item) => `<button class="patient-conversation-item ${selectedPatientConversation === item.id ? "active" : ""}" type="button" data-patient-conversation="${escapeHTML(item.id)}"><strong>${escapeHTML(item.providerName)}</strong><small>${escapeHTML(item.status)}</small></button>`).join("") : "No private conversations yet.";
+        list.querySelectorAll("[data-patient-conversation]").forEach((button) => button.addEventListener("click", () => openPatientConversation(button.dataset.patientConversation)));
+        if (patientConversations.length && !selectedPatientConversation) await openPatientConversation(patientConversations[0].id);
+      } catch (error) {
+        list.textContent = error.message;
+      }
+    }
+
+    async function openPatientConversation(id) {
+      selectedPatientConversation = id;
+      const conversation = patientConversations.find((item) => item.id === id);
+      if (!conversation) return;
+      document.querySelectorAll(".patient-conversation-item").forEach((button) => button.classList.toggle("active", button.dataset.patientConversation === id));
+      const thread = document.getElementById("patientConversationThread");
+      thread.textContent = "Loading messages...";
+      try {
+        const response = await fetch(`/api/consultations/${encodeURIComponent(id)}/messages`, { credentials: "include" });
+        const messages = await response.json();
+        if (!response.ok) throw new Error(messages.message || "Messages could not be loaded.");
+        thread.innerHTML = `${messages.length ? messages.map((item) => `<div class="patient-thread-message ${item.senderRole === "patient" ? "mine" : ""}">${escapeHTML(item.body)}</div>`).join("") : "No messages yet."}<form class="patient-thread-composer" id="patientThreadComposer"><textarea id="patientThreadBody" maxlength="4000" placeholder="Reply securely..." required></textarea><button class="doctor-connect-button" type="submit">Send</button></form>`;
+        document.getElementById("patientThreadComposer").addEventListener("submit", sendPatientMessage);
+      } catch (error) {
+        thread.textContent = error.message;
+      }
+    }
+
+    async function sendPatientMessage(event) {
+      event.preventDefault();
+      if (!selectedPatientConversation) return;
+      const body = document.getElementById("patientThreadBody").value.trim();
+      if (!body) return;
+      const response = await fetch(`/api/consultations/${encodeURIComponent(selectedPatientConversation)}/messages`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ body }) });
+      const data = await response.json();
+      if (!response.ok) return alert(data.message || "Message could not be sent.");
+      await openPatientConversation(selectedPatientConversation);
+    }
+
+    document.getElementById("loadPatientConversations").addEventListener("click", loadPatientConversations);
+  </script>
+
+  <script src="site-shell.js"></script>
+</body>
+</html>

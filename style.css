@@ -1,0 +1,844 @@
+/* =====================================================
+   MediConnect Professional Style
+===================================================== */
+
+:root {
+  --navy: #071b2b;
+  --navy-light: #0d2d43;
+  --teal: #2bb89b;
+  --teal-light: #78dfc5;
+  --white: #f4f8fa;
+  --muted: #a9bbc5;
+  --soft: #78919d;
+  --border: rgba(193, 224, 232, 0.18);
+  --card: rgba(9, 39, 55, 0.92);
+  --card-soft: rgba(255, 255, 255, 0.055);
+  --shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
+}
+
+/* Reset */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  color: var(--white);
+  background:
+    radial-gradient(
+      circle at 85% 0%,
+      rgba(43, 184, 155, 0.13),
+      transparent 28%
+    ),
+    linear-gradient(
+      180deg,
+      #0a293e 0%,
+      var(--navy) 72%
+    );
+  font-family: "Poppins", sans-serif;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* =====================================================
+   Navbar
+===================================================== */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  min-height: 70px;
+  padding: 13px clamp(15px, 4vw, 55px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(5, 24, 38, 0.94);
+  backdrop-filter: blur(18px);
+}
+
+.navbar ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(14px, 2.5vw, 32px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navbar ul li a {
+  position: relative;
+  color: #c1d0d7;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: color 0.25s ease;
+}
+
+.navbar ul li a:hover,
+.navbar ul li a.active {
+  color: var(--teal-light);
+}
+
+.navbar ul li a.active::after {
+  position: absolute;
+  right: 0;
+  bottom: -9px;
+  left: 0;
+  height: 2px;
+  content: "";
+  border-radius: 2px;
+  background: var(--teal);
+}
+
+/* Language Selector */
+
+.language-switcher {
+  position: absolute;
+  right: clamp(15px, 4vw, 55px);
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  transform: translateY(-50%);
+}
+
+.language-switcher select {
+  max-width: 140px;
+  padding: 8px 10px;
+  color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.07);
+  font-family: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.language-switcher select option {
+  color: #122b3a;
+  background: #edf6f5;
+}
+
+#google_translate_element {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* =====================================================
+   Common Sections
+===================================================== */
+
+.hero,
+.healthy-ways,
+.health-tips,
+.health-calculator,
+.vaccination-tracker,
+.news-wrapper {
+  width: min(1160px, calc(100% - 32px));
+  margin: 25px auto;
+  padding: clamp(25px, 4vw, 48px);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: rgba(8, 35, 51, 0.89);
+  box-shadow: var(--shadow);
+}
+
+/* =====================================================
+   Hero Section
+===================================================== */
+
+.hero {
+  position: relative;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
+  text-align: center;
+  background: #082538;
+}
+
+.hero-video {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  object-fit: cover !important;
+  opacity: 0.65;
+  filter: saturate(0.72) contrast(1.08);
+  pointer-events: none;
+}
+
+.hero-video-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(5, 25, 40, 0.86),
+      rgba(5, 25, 40, 0.4),
+      rgba(5, 25, 40, 0.8)
+    ),
+    linear-gradient(
+      180deg,
+      rgba(5, 25, 40, 0.2),
+      rgba(5, 25, 40, 0.84)
+    );
+  pointer-events: none;
+}
+
+.hero-text {
+  position: relative;
+  z-index: 2;
+  max-width: 850px;
+}
+
+.hero-text h1 {
+  margin: 0;
+  color: var(--white);
+  font-size: clamp(3.1rem, 8vw, 6.4rem);
+  line-height: 1;
+  letter-spacing: -0.08em;
+  text-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
+}
+
+.hero-text h1::after {
+  display: block;
+  width: 52px;
+  height: 3px;
+  margin: 22px auto 0;
+  content: "";
+  border-radius: 2px;
+  background: var(--teal-light);
+}
+
+.hero-text p {
+  color: #d1e1e6;
+  font-size: 1.1rem;
+}
+
+.hero-text p:first-of-type {
+  color: var(--teal-light);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hero-button {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 11px 17px;
+  color: #06232c;
+  border-radius: 6px;
+  background: var(--teal-light);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: 0.25s ease;
+}
+
+.hero-button:hover {
+  background: #b6f1dc;
+  transform: translateY(-2px);
+}
+
+/* =====================================================
+   Headings
+===================================================== */
+
+.healthy-ways h2,
+.health-tips h2,
+.health-calculator h2,
+.vaccination-tracker h2,
+.general-news h2,
+.location-news h2 {
+  margin: 0 0 10px;
+  color: var(--teal-light);
+  text-align: center;
+  font-size: clamp(1.55rem, 3vw, 2.2rem);
+  letter-spacing: -0.04em;
+}
+
+.section-description {
+  margin: 0 auto 25px;
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+/* =====================================================
+   Healthy Ways Cards
+===================================================== */
+
+.ways-container {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.way-card {
+  width: 220px;
+  min-height: 115px;
+  padding: 19px 17px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--card-soft);
+  font-family: inherit;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.way-card:hover {
+  border-color: var(--teal);
+  background: rgba(43, 184, 155, 0.11);
+  transform: translateY(-4px);
+}
+
+.way-icon {
+  margin-bottom: 8px;
+  font-size: 1.5rem;
+}
+
+.way-card strong,
+.way-card small {
+  display: block;
+}
+
+.way-card strong {
+  font-size: 0.9rem;
+}
+
+.way-card small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+/* =====================================================
+   Daily Tips
+===================================================== */
+
+.tips-container,
+.calc-container,
+.tracker-container {
+  display: flex;
+  align-items: stretch;
+  gap: 28px;
+}
+
+.tips-text,
+.tips-video,
+.calc-widget,
+.calc-video,
+.tracker-widget,
+.tracker-video {
+  flex: 1;
+}
+
+.tip-item {
+  padding: 1px 0;
+}
+
+.tip {
+  margin: 0 0 6px;
+  color: var(--white);
+  font-size: 0.94rem;
+  font-weight: 600;
+}
+
+.benefit {
+  margin: 0 0 15px;
+  padding-bottom: 13px;
+  color: var(--muted);
+  border-bottom: 1px solid rgba(193, 224, 232, 0.12);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+/* =====================================================
+   General Media Cards
+===================================================== */
+
+.media-card {
+  position: relative;
+  min-height: 300px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #071e2e;
+}
+
+.media-card video {
+  display: block;
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  opacity: 0.75;
+}
+
+.media-card::after {
+  position: absolute;
+  inset: 35% 0 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(
+    transparent,
+    rgba(3, 17, 28, 0.92)
+  );
+}
+
+.media-caption {
+  position: absolute;
+  right: 20px;
+  bottom: 17px;
+  left: 20px;
+  z-index: 2;
+}
+
+.media-caption span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--teal-light);
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.media-caption strong {
+  display: block;
+  color: var(--white);
+  font-size: 1rem;
+}
+
+/* =====================================================
+   Fitness Video - Vertical 9:16 Fix
+===================================================== */
+
+.calc-video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 390px;
+  overflow: hidden;
+  background: #071e2e;
+}
+
+.calc-video video {
+  width: auto !important;
+  height: 380px !important;
+  max-width: 100% !important;
+  aspect-ratio: 9 / 16;
+  object-fit: contain !important;
+  border-radius: 8px;
+  opacity: 1;
+  background: #071e2e;
+}
+
+/* =====================================================
+   Calculator and Tracker
+===================================================== */
+
+.tool-card {
+  padding: 26px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--card-soft);
+}
+
+.tool-label {
+  color: var(--teal-light);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.tool-card h3 {
+  margin: 9px 0 7px;
+  color: var(--white);
+  font-size: 1.2rem;
+}
+
+.tool-description {
+  margin: 0 0 21px;
+  color: var(--muted);
+  font-size: 0.79rem;
+  line-height: 1.6;
+}
+
+.tool-card label {
+  display: block;
+  margin-top: 11px;
+  color: #c8d9de;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.calc-widget input,
+.tracker-widget select {
+  display: block;
+  width: 100%;
+  margin-top: 7px;
+  padding: 11px 12px;
+  color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  background: rgba(0, 0, 0, 0.2);
+  font-family: inherit;
+  font-size: 0.8rem;
+}
+
+.calc-widget input::placeholder {
+  color: var(--soft);
+}
+
+.tracker-widget select option {
+  color: #122b3a;
+  background: #edf6f5;
+}
+
+.calc-widget input:focus,
+.tracker-widget select:focus,
+.location-input input:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(43, 184, 155, 0.1);
+}
+
+.calc-widget button,
+.location-input button {
+  margin-top: 18px;
+  padding: 11px 16px;
+  border: 0;
+  border-radius: 6px;
+  color: #06232c;
+  background: var(--teal-light);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.calc-widget button:hover,
+.location-input button:hover {
+  background: #b6f1dc;
+  transform: translateY(-2px);
+}
+
+#bmi-result {
+  min-height: 22px;
+  margin-top: 16px;
+  color: var(--teal-light);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+#vaccine-list {
+  margin: 17px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+#vaccine-list li {
+  margin: 7px 0;
+  padding: 9px 11px;
+  color: #cfe2e5;
+  border-radius: 6px;
+  background: rgba(43, 184, 155, 0.08);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+#vaccine-list li::before {
+  content: "✓";
+  margin-right: 8px;
+  color: var(--teal-light);
+  font-weight: 700;
+}
+
+#vaccine-list a {
+  color: var(--teal-light);
+  text-decoration: none;
+  font-size: 0.75rem;
+}
+
+/* =====================================================
+   News
+===================================================== */
+
+.news-wrapper {
+  display: flex;
+  gap: 30px;
+}
+
+.general-news,
+.location-news {
+  flex: 1;
+}
+
+.general-news h2,
+.location-news h2 {
+  margin-bottom: 20px;
+  font-size: 1.35rem;
+}
+
+.news-card {
+  margin-bottom: 14px;
+  padding: 15px 15px 15px 17px;
+  border-left: 3px solid var(--teal);
+  border-bottom: 1px solid rgba(193, 224, 232, 0.11);
+}
+
+.news-card h3 {
+  margin: 0 0 8px;
+  color: var(--white);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.news-card p {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.news-card a {
+  color: var(--teal-light);
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.news-card a:hover {
+  text-decoration: underline;
+}
+
+.location-input {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 17px;
+}
+
+.location-input input {
+  flex: 1;
+  min-width: 0;
+  padding: 11px 12px;
+  color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+  background: rgba(0, 0, 0, 0.18);
+  font-family: inherit;
+  font-size: 0.8rem;
+}
+
+.location-input input::placeholder {
+  color: var(--soft);
+}
+
+.location-input button {
+  margin-top: 0;
+  white-space: nowrap;
+}
+
+/* =====================================================
+   Modal
+===================================================== */
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  place-items: center;
+  padding: 20px;
+  background: rgba(1, 13, 22, 0.9);
+  backdrop-filter: blur(8px);
+}
+
+.modal-content {
+  position: relative;
+  width: min(850px, 100%);
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #061a29;
+}
+
+.modal-content video {
+  display: block;
+  width: 100%;
+  border-radius: 7px;
+}
+
+.close {
+  position: absolute;
+  top: -15px;
+  right: -12px;
+  z-index: 2;
+  width: 35px;
+  height: 35px;
+  border: 0;
+  border-radius: 50%;
+  color: #06232c;
+  background: var(--teal-light);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+/* =====================================================
+   Responsive
+===================================================== */
+
+@media (max-width: 900px) {
+  .navbar {
+    padding: 12px 15px;
+    flex-wrap: wrap;
+    gap: 13px;
+  }
+
+  .navbar ul {
+    order: 3;
+    flex-basis: 100%;
+    gap: 18px;
+  }
+
+  .language-switcher {
+    position: static;
+    margin-left: auto;
+    transform: none;
+  }
+
+  .tips-container,
+  .calc-container,
+  .tracker-container,
+  .news-wrapper {
+    flex-direction: column;
+  }
+
+  .tips-video video,
+  .tracker-video video {
+    height: 260px;
+  }
+
+  .calc-video {
+    min-height: 370px;
+  }
+
+  .calc-video video {
+    height: 360px !important;
+  }
+
+  .location-news {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(193, 224, 232, 0.14);
+  }
+}
+
+@media (max-width: 560px) {
+  .hero,
+  .healthy-ways,
+  .health-tips,
+  .health-calculator,
+  .vaccination-tracker,
+  .news-wrapper {
+    width: calc(100% - 20px);
+    padding: 23px 17px;
+  }
+
+  .navbar ul {
+    gap: 11px 15px;
+  }
+
+  .navbar ul li a {
+    font-size: 0.7rem;
+  }
+
+  .language-switcher label {
+    display: none;
+  }
+
+  .hero {
+    min-height: 430px;
+  }
+
+  .hero-text h1 {
+    font-size: clamp(3rem, 16vw, 5rem);
+  }
+
+  .way-card {
+    width: 100%;
+    max-width: 330px;
+  }
+
+  .location-input {
+    flex-direction: column;
+  }
+
+  .location-input button {
+    width: 100%;
+  }
+
+  .tool-card {
+    padding: 22px 18px;
+  }
+
+  .calc-video {
+    min-height: 350px;
+  }
+
+  .calc-video video {
+    height: 330px !important;
+  }
+}

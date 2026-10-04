@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    if (window.location.protocol === "file:") {
+      const localBase = document.createElement("base");
+      localBase.href = "http://localhost:3000/";
+      document.head.appendChild(localBase);
+    }
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediConnect | Find Care</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    .directory-page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 46px 20px 70px;
+    }
+
+    .directory-hero {
+      background: linear-gradient(135deg, #0c3a46, #0d625f);
+      border: 1px solid rgba(120, 223, 197, 0.24);
+      border-radius: 18px;
+      color: #f4fffc;
+      padding: 34px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .directory-kicker {
+      color: #a8f2dc;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      margin: 0 0 10px;
+      text-transform: uppercase;
+    }
+
+    .directory-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      letter-spacing: -0.05em;
+      margin: 0 0 10px;
+    }
+
+    .directory-hero p {
+      color: rgba(244, 255, 252, 0.76);
+      font-size: 0.92rem;
+      line-height: 1.7;
+      margin: 0;
+      max-width: 690px;
+    }
+
+    .directory-panel {
+      background: rgba(8, 35, 51, 0.92);
+      border: 1px solid rgba(193, 224, 232, 0.18);
+      border-radius: 16px;
+      margin-top: 20px;
+      padding: 22px;
+    }
+
+    .directory-filters {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr auto;
+    }
+
+    .directory-filters input,
+    .directory-filters select {
+      background: rgba(0, 0, 0, 0.18);
+      border: 1px solid rgba(193, 224, 232, 0.2);
+      border-radius: 7px;
+      color: #f4f8fa;
+      min-width: 0;
+      outline: none;
+      padding: 12px;
+      width: 100%;
+    }
+
+    .directory-filters input::placeholder {
+      color: #78919d;
+    }
+
+    .directory-filters select option {
+      background: #edf6f5;
+      color: #122b3a;
+    }
+
+    .directory-filters input:focus,
+    .directory-filters select:focus {
+      border-color: #2bb89b;
+      box-shadow: 0 0 0 3px rgba(43, 184, 155, 0.12);
+    }
+
+    .filter-button {
+      background: #a8f2dc;
+      border: 0;
+      border-radius: 7px;
+      color: #123e40;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0 17px;
+      white-space: nowrap;
+    }
+
+    .filter-button:hover {
+      background: #c2f9e7;
+    }
+
+    .directory-toolbar {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-top: 23px;
+    }
+
+    .directory-toolbar h2 {
+      color: #78dfc5;
+      font-size: 1.25rem;
+      margin: 0;
+    }
+
+    .directory-toolbar span {
+      color: #a9bbc5;
+      font-size: 0.78rem;
+    }
+
+    .provider-grid {
+      display: grid;
+      gap: 15px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .provider-card {
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(193, 224, 232, 0.15);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      padding: 18px;
+      transition: 0.2s ease;
+    }
+
+    .provider-card:hover {
+      border-color: rgba(120, 223, 197, 0.54);
+      transform: translateY(-3px);
+    }
+
+    .provider-card-header {
+      align-items: flex-start;
+      display: flex;
+      gap: 11px;
+      justify-content: space-between;
+    }
+
+    .provider-identity {
+      align-items: center;
+      display: flex;
+      gap: 10px;
+    }
+
+    .provider-avatar {
+      align-items: center;
+      background: rgba(120, 223, 197, 0.14);
+      border: 1px solid rgba(120, 223, 197, 0.24);
+      border-radius: 10px;
+      color: #a8f2dc;
+      display: grid;
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      font-weight: 700;
+      height: 42px;
+      justify-content: center;
+      width: 42px;
+    }
+
+    .provider-card h3 {
+      color: #f4f8fa;
+      font-size: 0.94rem;
+      line-height: 1.35;
+      margin: 0 0 4px;
+    }
+
+    .provider-card .provider-type {
+      color: #78dfc5;
+      font-size: 0.7rem;
+    }
+
+    .verified-label {
+      background: rgba(168, 242, 220, 0.12);
+      border: 1px solid rgba(168, 242, 220, 0.22);
+      border-radius: 999px;
+      color: #a8f2dc;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 5px 8px;
+      white-space: nowrap;
+    }
+
+    .provider-description {
+      color: #a9bbc5;
+      font-size: 0.76rem;
+      line-height: 1.6;
+      margin: 16px 0 13px;
+      min-height: 48px;
+    }
+
+    .provider-details {
+      border-bottom: 1px solid rgba(193, 224, 232, 0.12);
+      border-top: 1px solid rgba(193, 224, 232, 0.12);
+      display: grid;
+      gap: 9px;
+      grid-template-columns: 1fr 1fr;
+      padding: 12px 0;
+    }
+
+    .provider-detail {
+      color: #78919d;
+      font-size: 0.68rem;
+    }
+
+    .provider-detail strong {
+      color: #d1e1e6;
+      display: block;
+      font-size: 0.73rem;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .language-list {
+      color: #a8f2dc;
+      font-size: 0.72rem;
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+
+    .provider-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .provider-actions a {
+      border-radius: 7px;
+      flex: 1;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 10px 8px;
+      text-align: center;
+    }
+
+    .call-action {
+      background: #a8f2dc;
+      color: #123e40;
+    }
+
+    .message-action {
+      background: rgba(168, 242, 220, 0.12);
+      border: 1px solid rgba(168, 242, 220, 0.25);
+      color: #a8f2dc;
+    }
+
+    .provider-actions button {
+      border-radius: 7px;
+      flex: 1;
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 10px 8px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .empty-directory {
+      color: #a9bbc5;
+      font-size: 0.84rem;
+      line-height: 1.7;
+      padding: 46px 20px;
+      text-align: center;
+    }
+
+    .directory-note {
+      color: #78919d;
+      font-size: 0.7rem;
+      line-height: 1.6;
+      margin: 18px 0 0;
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .directory-filters {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .filter-button {
+        min-height: 42px;
+      }
+
+      .provider-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 620px) {
+      .directory-page {
+        padding: 25px 12px 55px;
+      }
+
+      .directory-hero,
+      .directory-panel {
+        padding: 20px 16px;
+      }
+
+      .directory-filters,
+      .provider-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .directory-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+      }
+    }
+    .consultation-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(3,20,27,.72);
+    }
+
+    .consultation-modal.open { display: flex; }
+
+    .consultation-dialog {
+      width: min(520px, 100%);
+      padding: 22px;
+      border: 1px solid rgba(120,223,197,.25);
+      border-radius: 13px;
+      background: #082333;
+    }
+
+    .consultation-dialog h2 { margin: 0 0 7px; color: #f4fffc; font-size: 1.15rem; }
+    .consultation-dialog p { color: #a9bbc5; font-size: .76rem; line-height: 1.6; }
+    .consultation-dialog textarea { width: 100%; min-height: 115px; margin-top: 10px; padding: 11px; color: #f4f8fa; border: 1px solid rgba(193,224,232,.2); border-radius: 7px; background: rgba(0,0,0,.18); resize: vertical; }
+    .consultation-dialog select { width: 100%; margin-top: 10px; padding: 10px; color: #f4f8fa; border: 1px solid rgba(193,224,232,.2); border-radius: 7px; background: rgba(0,0,0,.18); }
+    .consultation-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 13px; }
+    .consultation-actions button { padding: 9px 13px; border: 0; border-radius: 7px; color: #123e40; background: #a8f2dc; font-size: .72rem; font-weight: 700; cursor: pointer; }
+    .consultation-actions .cancel { color: #a8f2dc; border: 1px solid rgba(168,242,220,.24); background: transparent; }
+  </style>
+  <link rel="stylesheet" href="site-shell.css">
+</head>
+
+<body>
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="doctors.html" class="active">Find Care</a></li>
+      <li><a href="vaccination.html">Vaccination Updates</a></li>
+      <li><a href="chatbot.html">MediGuide</a></li>
+      <li><a href="habits.html">Healthy Habits</a></li>
+      <li id="adminNavItem" hidden>
+        <a href="admin-panel.html" class="admin-panel-link">Admin Panel</a>
+      </li>
+    </ul>
+
+    <div class="language-switcher">
+      <label for="languageSelect">Language</label>
+      <select id="languageSelect" onchange="changeLanguage(this.value)">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी — Hindi</option>
+        <option value="mr">मराठी — Marathi</option>
+        <option value="gu">ગુજરાતી — Gujarati</option>
+        <option value="ur">اردو — Urdu</option>
+        <option value="ta">தமிழ் — Tamil</option>
+        <option value="te">తెలుగు — Telugu</option>
+        <option value="ml">മലയാളം — Malayalam</option>
+        <option value="kn">ಕನ್ನಡ — Kannada</option>
+        <option value="bn">বাংলা — Bengali</option>
+        <option value="pa">ਪੰਜਾਬੀ — Punjabi</option>
+      </select>
+    </div>
+  </nav>
+
+  <main class="directory-page">
+    <section class="directory-hero">
+      <p class="directory-kicker">Verified healthcare directory</p>
+      <h1>Find the right care near you</h1>
+      <p>
+        Search verified doctors, hospitals, clinics and healthcare organisations by location, speciality and preferred language.
+      </p>
+    </section>
+
+    <section class="directory-panel">
+      <form class="directory-filters" id="directoryForm">
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search by provider or speciality"
+        />
+
+        <input
+          id="cityInput"
+          type="text"
+          placeholder="City or location"
+        />
+
+        <input
+          id="specialityInput"
+          type="text"
+          placeholder="Speciality"
+        />
+
+        <select id="languageInput">
+          <option value="">Any language</option>
+          <option value="English">English</option>
+          <option value="Hindi">Hindi</option>
+          <option value="Hinglish">Hinglish</option>
+          <option value="Marathi">Marathi</option>
+          <option value="Gujarati">Gujarati</option>
+          <option value="Urdu">Urdu</option>
+          <option value="Tamil">Tamil</option>
+          <option value="Telugu">Telugu</option>
+          <option value="Bengali">Bengali</option>
+          <option value="Punjabi">Punjabi</option>
+        </select>
+
+        <button class="filter-button" type="submit">Search</button>
+      </form>
+
+      <div class="directory-toolbar">
+        <div>
+          <h2>Verified providers</h2>
+          <span id="resultCount">Loading directory...</span>
+        </div>
+        <button class="filter-button" type="button" id="refreshDirectory">Refresh directory</button>
+      </div>
+
+      <div class="provider-grid" id="providerGrid">
+        <div class="empty-directory">
+          Enter a location or speciality to search the verified directory.
+        </div>
+      </div>
+
+      <p class="directory-note">
+        Contact options are displayed only when a verified provider has enabled them. This directory is for discovery and does not replace professional medical advice.
+      </p>
+    </section>
+  </main>
+
+  <div class="consultation-modal" id="consultationModal" role="dialog" aria-modal="true" aria-labelledby="consultationTitle">
+    <form class="consultation-dialog" id="consultationForm">
+      <h2 id="consultationTitle">Request a private conversation</h2>
+      <p id="consultationProviderName">Your message will be shared only with the selected verified provider.</p>
+      <textarea id="consultationMessage" maxlength="4000" placeholder="Briefly describe what you need help with..." required></textarea>
+      <select id="preferredChannel">
+        <option value="message">Internal MediConnect message</option>
+        <option value="call">Request a phone call</option>
+        <option value="whatsapp">Request WhatsApp contact</option>
+      </select>
+      <div class="consultation-actions">
+        <button class="cancel" type="button" id="closeConsultation">Cancel</button>
+        <button type="submit" id="sendConsultation">Send request</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="google_translate_element"></div>
+
+  <script>
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function initials(name) {
+      return String(name || "Provider")
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((word) => word[0])
+        .join("")
+        .toUpperCase();
+    }
+
+    function phoneForLink(phone) {
+      return String(phone || "").trim().replace(/[^\d+]/g, "");
+    }
+
+    function whatsappForLink(phone) {
+      const normalized = phoneForLink(phone);
+      const digits = normalized.replace(/\D/g, "");
+
+      if (normalized.startsWith("+")) return digits;
+      if (digits.startsWith("00")) return digits.slice(2);
+      return digits.length > 10 ? digits : "";
+    }
+
+    function renderProviders(providers) {
+      const grid = document.getElementById("providerGrid");
+      const resultCount = document.getElementById("resultCount");
+
+      resultCount.textContent = `${providers.length} provider${providers.length === 1 ? "" : "s"} found`;
+
+      if (!providers.length) {
+        grid.innerHTML = `
+          <div class="empty-directory">
+            No verified providers match the selected criteria.
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = providers.map((provider) => {
+        const phone = phoneForLink(provider.phone);
+        const messagePhone = whatsappForLink(provider.messagePhone || provider.phone);
+        const languages = Array.isArray(provider.languages)
+          ? provider.languages.join(", ")
+          : "Not specified";
+
+        return `
+          <article class="provider-card">
+            <div class="provider-card-header">
+              <div class="provider-identity">
+                <div class="provider-avatar">
+                  ${escapeHTML(initials(provider.name))}
+                </div>
+
+                <div>
+                  <h3>${escapeHTML(provider.name)}</h3>
+                  <span class="provider-type">
+                    ${escapeHTML(provider.type || "Healthcare provider")}
+                  </span>
+                </div>
+              </div>
+
+              <span class="verified-label">Verified</span>
+            </div>
+
+            <p class="provider-description">
+              ${escapeHTML(provider.about || "Verified healthcare provider listed on MediConnect.")}
+            </p>
+
+            <div class="provider-details">
+              <div class="provider-detail">
+                Speciality
+                <strong>${escapeHTML(provider.speciality || "Not specified")}</strong>
+              </div>
+
+              <div class="provider-detail">
+                Experience
+                <strong>${escapeHTML(provider.experience || "Not specified")} years</strong>
+              </div>
+
+              <div class="provider-detail">
+                Location
+                <strong>${escapeHTML(provider.city || "—")}, ${escapeHTML(provider.state || "—")}</strong>
+              </div>
+
+              <div class="provider-detail">
+                Availability
+                <strong>${escapeHTML(provider.consultationMode || "Contact provider")}</strong>
+              </div>
+            </div>
+
+            <div class="language-list">
+              Languages: ${escapeHTML(languages)}
+            </div>
+
+            <div class="provider-actions">
+              ${provider.allowCalls && phone
+                ? `<a class="call-action" href="tel:${escapeHTML(phone)}" aria-label="Call ${escapeHTML(provider.name || "provider")}" title="Open phone dialer">Call</a>`
+                : ""}
+
+              ${provider.allowMessages && messagePhone
+                ? `<a class="message-action" href="https://wa.me/${escapeHTML(messagePhone)}" target="_blank" rel="noopener noreferrer" aria-label="Message ${escapeHTML(provider.name || "provider")} on WhatsApp" title="Open WhatsApp">WhatsApp</a>`
+                : ""}
+
+              <button class="message-action internal-message-action" type="button" data-provider-id="${escapeHTML(provider.id)}" data-provider-name="${escapeHTML(provider.name || "provider")}">Message</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    let consultationProviderId = null;
+
+    function openConsultation(providerId, providerName) {
+      consultationProviderId = providerId;
+      document.getElementById("consultationProviderName").textContent = `Requesting a private conversation with ${providerName}. You may need to sign in as a patient.`;
+      document.getElementById("consultationMessage").value = "";
+      document.getElementById("consultationModal").classList.add("open");
+      document.getElementById("consultationMessage").focus();
+    }
+
+    function closeConsultation() {
+      document.getElementById("consultationModal").classList.remove("open");
+      consultationProviderId = null;
+    }
+
+    document.addEventListener("click", (event) => {
+      const button = event.target.closest(".internal-message-action, .callback-action");
+      if (!button) return;
+      openConsultation(button.dataset.providerId, button.dataset.providerName);
+      if (button.classList.contains("callback-action")) document.getElementById("preferredChannel").value = "call";
+    });
+
+    document.getElementById("closeConsultation").addEventListener("click", closeConsultation);
+    document.getElementById("consultationModal").addEventListener("click", (event) => {
+      if (event.target.id === "consultationModal") closeConsultation();
+    });
+
+    document.getElementById("consultationForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!consultationProviderId) return;
+      const button = document.getElementById("sendConsultation");
+      button.disabled = true;
+      button.textContent = "Sending...";
+      try {
+        const preferredChannel = document.getElementById("preferredChannel").value;
+        const isCallback = preferredChannel === "call";
+        const endpoint = isCallback ? "/api/call-requests" : "/api/consultations";
+        const payload = isCallback
+          ? {
+              providerId: consultationProviderId,
+              patientPhone: document.getElementById("callbackPhone").value.trim(),
+              preferredTime: document.getElementById("preferredTime").value.trim(),
+              message: document.getElementById("consultationMessage").value.trim()
+            }
+          : {
+              providerId: consultationProviderId,
+              message: document.getElementById("consultationMessage").value.trim(),
+              preferredChannel
+            };
+        const response = await fetch(endpoint, {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (response.status === 401) {
+          window.location.href = `login.html?redirect=${encodeURIComponent("doctors.html")}`;
+          return;
+        }
+        if (!response.ok) throw new Error(data.message || "The request could not be sent.");
+        closeConsultation();
+        alert(isCallback ? "Your callback request has been sent to the provider." : "Your private conversation request has been sent.");
+      } catch (error) {
+        alert(error.message);
+      } finally {
+        button.disabled = false;
+        button.textContent = "Send request";
+      }
+    });
+
+    async function loadProviders(event) {
+      if (event) event.preventDefault();
+
+      const params = new URLSearchParams();
+      const initialType = new URLSearchParams(window.location.search).get("type");
+      const search = document.getElementById("searchInput").value.trim();
+      const city = document.getElementById("cityInput").value.trim();
+      const speciality = document.getElementById("specialityInput").value.trim();
+      const language = document.getElementById("languageInput").value;
+
+      if (initialType) params.set("type", initialType);
+      if (search) params.set("search", search);
+      if (city) params.set("city", city);
+      if (speciality) params.set("speciality", speciality);
+      if (language) params.set("language", language);
+
+      const grid = document.getElementById("providerGrid");
+      grid.innerHTML = `<div class="empty-directory">Searching the verified directory...</div>`;
+
+      try {
+        const response = await fetch(`/api/public/providers?${params.toString()}`, { cache: "no-store" });
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Directory could not be loaded.");
+        }
+
+        renderProviders(data);
+      } catch (error) {
+        grid.innerHTML = `
+          <div class="empty-directory">
+            The directory is temporarily unavailable. Please try again shortly.
+          </div>
+        `;
+      }
+    }
+
+    async function showAdminLink() {
+      try {
+        const response = await fetch("/api/auth/me", {
+          credentials: "include"
+        });
+
+        if (!response.ok) return;
+
+        const user = await response.json();
+
+        if (["admin", "super_admin"].includes(user.role)) {
+          document.getElementById("adminNavItem").hidden = false;
+        }
+      } catch {
+        // Public directory remains available when authentication is unavailable.
+      }
+    }
+
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {
+          pageLanguage: "en",
+          includedLanguages: "en,hi,mr,gu,ur,ta,te,ml,kn,bn,pa",
+          autoDisplay: false
+        },
+        "google_translate_element"
+      );
+    }
+
+    function changeLanguage(languageCode, attempt = 0) {
+      const googleDropdown = document.querySelector(".goog-te-combo");
+
+      if (googleDropdown) {
+        googleDropdown.value = languageCode;
+        googleDropdown.dispatchEvent(new Event("change"));
+        return;
+      }
+
+      if (attempt < 10) {
+        setTimeout(() => changeLanguage(languageCode, attempt + 1), 400);
+      }
+    }
+
+    document.getElementById("directoryForm").addEventListener("submit", loadProviders);
+    document.getElementById("refreshDirectory").addEventListener("click", () => loadProviders());
+    window.addEventListener("focus", () => loadProviders());
+    showAdminLink();
+    loadProviders();
+    window.setInterval(() => loadProviders(), 15000);
+  </script>
+
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script src="site-shell.js"></script>
+</body>
+</html>

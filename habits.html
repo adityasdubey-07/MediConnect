@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    if (window.location.protocol === "file:") {
+      const localBase = document.createElement("base");
+      localBase.href = "http://localhost:3000/";
+      document.head.appendChild(localBase);
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediConnect | Healthy Habits</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --white: #f4f8fa;
+      --muted: #a9bbc5;
+      --teal: #2bb89b;
+      --teal-light: #78dfc5;
+      --border: rgba(193,224,232,.18);
+      --card: rgba(8,35,51,.94);
+      --soft-card: rgba(255,255,255,.045);
+      --amber: #e4bf69;
+    }
+
+    * { box-sizing: border-box; }
+    body { color: var(--white); }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .habits-page {
+      width: min(1160px, calc(100% - 32px));
+      margin: auto;
+      padding: 46px 0 35px;
+    }
+
+    .habits-intro,
+    .wellness-audit,
+    .learning-section,
+    .quiz-section,
+    .results-section {
+      margin-bottom: 24px;
+      padding: clamp(24px, 4vw, 46px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--card);
+      box-shadow: 0 18px 42px rgba(0,0,0,.22);
+    }
+
+    .habits-intro {
+      text-align: center;
+      background: linear-gradient(135deg, rgba(13,57,72,.97), rgba(7,31,47,.95));
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--teal-light);
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .habits-intro h1 {
+      margin: 0;
+      color: var(--white);
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.1;
+      letter-spacing: -.06em;
+    }
+
+    .habits-intro h1 span { color: var(--teal-light); }
+    .habits-intro p:not(.eyebrow) { max-width: 720px; margin: 18px auto 0; color: var(--muted); font-size: .9rem; line-height: 1.75; }
+
+    .habits-button {
+      display: inline-block;
+      margin-top: 22px;
+      padding: 12px 18px;
+      color: #06232c;
+      border: 0;
+      border-radius: 7px;
+      background: var(--teal-light);
+      font-size: .8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .25s ease;
+    }
+
+    .habits-button:hover { background: #b6f1dc; transform: translateY(-2px); }
+    .habits-button.secondary { color: var(--teal-light); border: 1px solid rgba(168,242,220,.28); background: transparent; }
+
+    .audit-heading,
+    .learning-heading,
+    .quiz-header { margin-bottom: 24px; }
+    .audit-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+    .audit-heading h2,
+    .learning-heading h2,
+    .quiz-header h2 { margin: 0; color: var(--white); font-size: clamp(1.5rem, 3vw, 2.3rem); letter-spacing: -.05em; }
+    .audit-heading p:not(.eyebrow),
+    .learning-heading p:not(.eyebrow),
+    .quiz-header p:not(.eyebrow) { max-width: 720px; margin: 9px 0 0; color: var(--muted); font-size: .82rem; line-height: 1.7; }
+
+    .audit-status,
+    .quiz-counter {
+      flex-shrink: 0;
+      padding: 7px 10px;
+      color: var(--teal-light);
+      border: 1px solid rgba(120,223,197,.25);
+      border-radius: 6px;
+      background: rgba(43,184,155,.08);
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .audit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .audit-group { padding: 18px; border: 1px solid var(--border); border-radius: 9px; background: rgba(255,255,255,.035); }
+    .audit-label { display: block; margin-bottom: 13px; color: var(--white); font-size: .78rem; font-weight: 600; }
+    .audit-label span { display: block; margin-bottom: 4px; color: var(--teal-light); font-size: .65rem; letter-spacing: .08em; text-transform: uppercase; }
+    .audit-options { display: grid; gap: 8px; }
+    .audit-choice { width: 100%; padding: 10px 11px; color: var(--muted); border: 1px solid var(--border); border-radius: 6px; background: transparent; font-size: .72rem; text-align: left; transition: .2s ease; }
+    .audit-choice:hover, .audit-choice.active { color: var(--white); border-color: var(--teal); background: rgba(43,184,155,.12); }
+    .audit-result { display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: center; margin-top: 20px; padding: 20px; border-left: 3px solid var(--teal-light); border-radius: 8px; background: rgba(43,184,155,.07); }
+    .audit-result h3 { margin: 0 0 7px; font-size: 1rem; }
+    .audit-result p { margin: 0; color: var(--muted); font-size: .76rem; line-height: 1.65; }
+    .audit-result strong { display: block; min-width: 110px; color: var(--teal-light); font-size: 1.25rem; text-align: right; }
+
+    .learning-heading { margin-bottom: 24px; }
+    .body-layout { display: grid; grid-template-columns: 1.35fr .65fr; gap: 20px; }
+
+    .symptom-panel { padding: 24px; border: 1px solid var(--border); border-radius: 10px; background: rgba(9,39,55,.94); }
+    .area-picker { margin-bottom: 22px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .area-picker-title { margin: 0 0 11px; color: var(--teal-light); font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .area-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+    .area-button { padding: 8px 11px; color: var(--muted); border: 1px solid var(--border); border-radius: 7px; background: transparent; font-size: .7rem; transition: .2s ease; }
+    .area-button:hover, .area-button.selected { color: #06232c; border-color: var(--teal-light); background: var(--teal-light); }
+    .symptom-panel h3 { margin: 0 0 8px; font-size: 1.3rem; }
+    .symptom-panel > p { margin: 0 0 20px; color: var(--muted); font-size: .78rem; line-height: 1.65; }
+    .symptom-options { display: grid; gap: 8px; }
+    .symptom-option { display: flex; align-items: center; gap: 9px; padding: 11px; color: var(--muted); border: 1px solid var(--border); border-radius: 7px; background: var(--soft-card); font-size: .75rem; transition: .2s ease; }
+    .symptom-option:hover, .symptom-option.selected { color: var(--white); border-color: var(--teal); background: rgba(43,184,155,.11); }
+    .symptom-option input { accent-color: var(--teal); }
+    .symptom-textarea, .feel-textarea { width: 100%; padding: 12px; color: var(--white); border: 1px solid var(--border); border-radius: 7px; outline: none; background: rgba(0,0,0,.18); font-size: .78rem; }
+    .symptom-textarea { min-height: 88px; margin-top: 17px; resize: vertical; }
+    .symptom-textarea::placeholder, .feel-textarea::placeholder { color: #78919d; }
+    .body-awareness-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 10px; }
+    .body-awareness-fields label { color: var(--muted); font-size: .7rem; font-weight: 600; }
+    .body-awareness-fields select { display: block; width: 100%; margin-top: 5px; padding: 9px; color: var(--white); border: 1px solid var(--border); border-radius: 7px; background: rgba(0,0,0,.18); font-size: .72rem; }
+    .symptom-response, .feel-response { display: none; margin-top: 19px; padding: 16px; border-left: 3px solid var(--teal); border-radius: 6px; background: rgba(43,184,155,.08); }
+    .symptom-response.visible, .feel-response.visible { display: block; }
+    .symptom-response h4, .feel-response h4 { margin: 0 0 8px; color: var(--teal-light); font-size: .88rem; }
+    .symptom-response p, .symptom-response li, .feel-response p { color: var(--muted); font-size: .74rem; line-height: 1.65; }
+    .symptom-response ul { padding-left: 17px; }
+    .health-note { margin-top: 15px; padding: 11px; color: var(--amber); border: 1px solid rgba(228,191,105,.25); border-radius: 6px; background: rgba(228,191,105,.06); font-size: .67rem; line-height: 1.55; }
+    .body-connect-box { margin-top: 15px; padding: 13px; border: 1px solid rgba(120,223,197,.25); border-radius: 8px; background: rgba(43,184,155,.06); }
+    .body-connect-box p { margin: 0; color: var(--muted); font-size: .74rem; line-height: 1.5; }
+    .body-connect-box .habits-button { margin-top: 11px; padding: 9px 12px; font-size: .7rem; }
+
+    .feel-section { margin-top: 22px; padding: 27px; border: 1px solid var(--border); border-radius: 10px; background: rgba(13,54,71,.72); }
+    .feel-section h2 { margin: 0 0 8px; font-size: 1.5rem; }
+    .feel-section > p { max-width: 680px; margin: 0 0 18px; color: var(--muted); font-size: .8rem; line-height: 1.65; }
+    .feel-textarea { min-height: 120px; resize: vertical; }
+    .feel-suggestions { display: flex; gap: 7px; margin-top: 10px; overflow-x: auto; }
+    .feel-suggestions button { flex-shrink: 0; padding: 8px 10px; color: var(--muted); border: 1px solid var(--border); border-radius: 6px; background: transparent; font-size: .65rem; }
+
+    .quiz-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 15px; }
+    .progress-track, .metric-track { width: 100%; height: 6px; overflow: hidden; border-radius: 5px; background: rgba(255,255,255,.1); }
+    .progress-track { margin: 18px 0 27px; }
+    .progress-bar, .metric-value { width: 0%; height: 100%; border-radius: 5px; background: var(--teal); transition: width .35s ease; }
+    .quiz-question { margin-bottom: 19px; color: var(--white); font-size: 1rem; font-weight: 600; }
+    .quiz-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+    .quiz-option { display: block; padding: 14px; color: var(--muted); border: 1px solid var(--border); border-radius: 7px; background: var(--soft-card); font-size: .75rem; transition: .2s ease; }
+    .quiz-option:hover, .quiz-option.selected { color: var(--white); border-color: var(--teal); background: rgba(43,184,155,.11); }
+    .quiz-option input { margin-right: 8px; accent-color: var(--teal); }
+    .quiz-navigation { display: flex; justify-content: space-between; margin-top: 23px; }
+    .quiz-navigation button { padding: 10px 16px; color: var(--white); border: 1px solid var(--border); border-radius: 7px; background: transparent; font-size: .76rem; }
+    .quiz-navigation button.primary { color: #06232c; border-color: var(--teal-light); background: var(--teal-light); }
+    .quiz-navigation button:disabled { cursor: not-allowed; opacity: .45; }
+
+    .results-section { display: none; }
+    .results-section.visible { display: block; }
+    .results-heading { text-align: center; }
+    .results-heading h2 { margin: 0; font-size: 2rem; }
+    .score-number { margin-top: 15px; color: var(--teal-light); font-size: clamp(3rem, 8vw, 5.5rem); font-weight: 700; }
+    .score-category { color: var(--muted); font-size: .8rem; }
+    .probability-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 28px; }
+    .probability-card { padding: 16px; border: 1px solid var(--border); border-radius: 9px; background: var(--soft-card); }
+    .probability-card.top { border-color: var(--teal); background: rgba(43,184,155,.1); }
+    .probability-card h3 { margin: 0 0 7px; font-size: .82rem; }
+    .probability-card p { min-height: 43px; margin: 0 0 10px; color: var(--muted); font-size: .7rem; line-height: 1.5; }
+    .probability-value { color: var(--teal-light); font-size: 1.25rem; font-weight: 700; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 14px; }
+    .dashboard-card, .action-plan { margin-top: 14px; padding: 21px; border: 1px solid var(--border); border-radius: 8px; background: var(--soft-card); }
+    .dashboard-card h3, .action-plan h3 { margin: 0 0 15px; font-size: .95rem; }
+    .metric { margin: 13px 0; }
+    .metric-label { display: flex; justify-content: space-between; margin-bottom: 6px; color: var(--muted); font-size: .7rem; }
+    .insight-list { margin: 0; padding: 0; list-style: none; }
+    .insight-list li { margin: 9px 0; color: var(--muted); font-size: .76rem; line-height: 1.5; }
+    .good-list li::before { content: "✓"; margin-right: 8px; color: var(--teal-light); }
+    .improve-list li::before { display: inline-grid; width: 15px; height: 15px; margin-right: 8px; content: "!"; place-items: center; color: var(--amber); border: 1px solid var(--amber); border-radius: 50%; font-size: .6rem; }
+    .action-item { display: flex; align-items: center; gap: 9px; margin: 9px 0; color: var(--muted); font-size: .78rem; }
+    .action-item input { accent-color: var(--teal); }
+    .weekly-progress { margin-top: 16px; color: var(--teal-light); font-size: .78rem; font-weight: 600; }
+    .health-note { margin-top: 15px; }
+    .final-cta { margin-top: 25px; padding: 35px 20px; text-align: center; border: 1px solid var(--border); border-radius: 9px; background: rgba(13,54,71,.85); }
+    .final-cta h2 { margin: 0; font-size: clamp(1.5rem, 4vw, 2.7rem); }
+    .final-cta p { color: var(--muted); font-size: .82rem; }
+    #google_translate_element { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+    @media (max-width: 850px) {
+      .body-layout, .dashboard-grid { grid-template-columns: 1fr; }
+      .audit-grid { grid-template-columns: 1fr; }
+      .audit-heading, .quiz-header { display: block; }
+      .audit-status, .quiz-counter { display: inline-block; margin-top: 14px; }
+      .probability-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      .habits-page { width: calc(100% - 20px); padding-top: 30px; }
+      .habits-intro, .wellness-audit, .learning-section, .quiz-section, .results-section { padding: 22px 16px; }
+      .quiz-options, .probability-grid { grid-template-columns: 1fr; }
+      .audit-result { grid-template-columns: 1fr; }
+      .audit-result strong { text-align: left; }
+      .body-awareness-fields { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="site-shell.css">
+</head>
+<body>
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="doctors.html">Find Care</a></li>
+      <li><a href="vaccination.html">Vaccination Updates</a></li>
+      <li><a href="chatbot.html">MediGuide</a></li>
+      <li><a href="habits.html" class="active">Healthy Habits</a></li>
+      <li id="adminNavItem" hidden><a href="admin-panel.html">Admin Panel</a></li>
+    </ul>
+    <div class="language-switcher">
+      <label for="languageSelect">Language</label>
+      <select id="languageSelect" onchange="changeLanguage(this.value)">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी — Hindi</option>
+        <option value="mr">मराठी — Marathi</option>
+        <option value="gu">ગુજરાતી — Gujarati</option>
+        <option value="ur">اردو — Urdu</option>
+        <option value="ta">தமிழ் — Tamil</option>
+        <option value="te">తెలుగు — Telugu</option>
+        <option value="ml">മലയാളം — Malayalam</option>
+        <option value="kn">ಕನ್ನಡ — Kannada</option>
+        <option value="bn">বাংলা — Bengali</option>
+        <option value="pa">ਪੰਜਾਬੀ — Punjabi</option>
+      </select>
+    </div>
+  </nav>
+
+  <main class="habits-page">
+    <section class="habits-intro">
+      <p class="eyebrow">Healthy Habits Learning Centre</p>
+      <h1>Build a Routine That <span>Supports Your Health.</span></h1>
+      <p>Learn about everyday body signals and receive a personalised lifestyle snapshot based on your answers.</p>
+      <a class="habits-button" href="#quizSection">Start My Assessment →</a>
+    </section>
+
+    <section class="wellness-audit" id="wellnessAudit">
+      <div class="audit-heading">
+        <div>
+          <p class="eyebrow">Personal wellness audit</p>
+          <h2>Build a Routine That Fits Your Day</h2>
+          <p>Select your primary goal, available time and daily routine. This is a planning aid, not a diagnosis.</p>
+        </div>
+        <span class="audit-status">Lifestyle guidance</span>
+      </div>
+      <div class="audit-grid">
+        <div class="audit-group">
+          <label class="audit-label"><span>01 · Primary goal</span>What would you like to improve?</label>
+          <div class="audit-options">
+            <button class="audit-choice active" data-group="goal" data-value="sleep" type="button">Better sleep</button>
+            <button class="audit-choice" data-group="goal" data-value="energy" type="button">Improve energy</button>
+            <button class="audit-choice" data-group="goal" data-value="stress" type="button">Manage stress</button>
+            <button class="audit-choice" data-group="goal" data-value="fitness" type="button">Stay physically active</button>
+          </div>
+        </div>
+        <div class="audit-group">
+          <label class="audit-label"><span>02 · Available time</span>How much time can you give daily?</label>
+          <div class="audit-options">
+            <button class="audit-choice active" data-group="time" data-value="5" type="button">5 minutes</button>
+            <button class="audit-choice" data-group="time" data-value="15" type="button">15 minutes</button>
+            <button class="audit-choice" data-group="time" data-value="30" type="button">30 minutes</button>
+          </div>
+        </div>
+        <div class="audit-group">
+          <label class="audit-label"><span>03 · Daily routine</span>Which routine describes you best?</label>
+          <div class="audit-options">
+            <button class="audit-choice active" data-group="routine" data-value="student" type="button">Student routine</button>
+            <button class="audit-choice" data-group="routine" data-value="professional" type="button">Working professional</button>
+            <button class="audit-choice" data-group="routine" data-value="general" type="button">General wellness</button>
+          </div>
+        </div>
+      </div>
+      <div class="audit-result">
+        <div><h3>Your Suggested Starting Point</h3><p id="auditRecommendation">Select your preferences to create a personalised routine.</p></div>
+        <strong id="auditTime">5 min/day</strong>
+      </div>
+    </section>
+
+    <section class="learning-section" id="body-section">
+      <div class="learning-heading">
+        <p class="eyebrow">Body awareness guide</p>
+        <h2>Understand Everyday Body Signals</h2>
+        <p>Choose an area and record what you are experiencing. This guided check is for awareness only and does not replace a clinical examination.</p>
+      </div>
+
+      <div class="body-layout">
+        <div class="symptom-panel">
+          <div class="area-picker">
+            <p class="area-picker-title">Choose an area</p>
+            <div class="area-buttons">
+              <button class="area-button selected" data-region="head" type="button">Head</button>
+              <button class="area-button" data-region="chest" type="button">Chest</button>
+              <button class="area-button" data-region="stomach" type="button">Stomach</button>
+              <button class="area-button" data-region="hand" type="button">Hand</button>
+              <button class="area-button" data-region="knee" type="button">Knee</button>
+              <button class="area-button" data-region="feet" type="button">Feet</button>
+            </div>
+          </div>
+          <h3 id="selectedRegionTitle">Explore your head</h3>
+          <p id="selectedRegionText">Head discomfort can sometimes be associated with sleep, hydration, stress, screen habits or other factors.</p>
+          <div class="symptom-options" id="symptomOptions"></div>
+          <textarea class="symptom-textarea" id="symptomDetails" placeholder="Tell us a little more..."></textarea>
+          <div class="body-awareness-fields">
+            <label>Severity<select id="bodySeverity"><option value="Mild">Mild</option><option value="Moderate">Moderate</option><option value="Severe">Severe</option></select></label>
+            <label>Duration<select id="bodyDuration"><option value="Today">Today</option><option value="Few days">Few days</option><option value="More than a week">More than a week</option><option value="Long-term">Long-term</option></select></label>
+          </div>
+          <button class="habits-button" id="understandSymptoms" type="button">Review this entry →</button>
+          <div class="symptom-response" id="symptomResponse"></div>
+          <div class="body-connect-box" id="bodyConnectBox" hidden>
+            <p>Would you like to discuss this with a verified provider?</p>
+            <button class="habits-button" id="bodyConnectButton" type="button">Find a relevant provider →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="feel-section">
+        <h2>Something Doesn't Feel Right?</h2>
+        <p>You do not need to know exactly what is wrong. Describe what you are experiencing and receive general lifestyle prompts.</p>
+        <textarea class="feel-textarea" id="feelingInput" placeholder="Tell us what you're feeling..."></textarea>
+        <div class="feel-suggestions">
+          <button type="button" data-feeling="I feel tired throughout the day.">I feel tired throughout the day.</button>
+          <button type="button" data-feeling="I have trouble sleeping.">I have trouble sleeping.</button>
+          <button type="button" data-feeling="My back hurts after sitting.">My back hurts after sitting.</button>
+          <button type="button" data-feeling="I feel stressed frequently.">I feel stressed frequently.</button>
+        </div>
+        <button class="habits-button" id="understandFeeling" type="button">Help Me Understand →</button>
+        <div class="feel-response" id="feelResponse"></div>
+      </div>
+    </section>
+
+    <section class="quiz-section" id="quizSection">
+      <div class="quiz-header">
+        <div>
+          <p class="eyebrow">Lifestyle assessment</p>
+          <h2>Your Symptoms Are One Part of the Story.</h2>
+          <p>There are no correct or incorrect answers. Each response contributes to a set of lifestyle patterns, and the final screen shows the relative probability of each pattern.</p>
+        </div>
+        <span class="quiz-counter" id="quizCounter">Question 01 / 12</span>
+      </div>
+      <div class="progress-track"><div class="progress-bar" id="quizProgress"></div></div>
+      <div class="quiz-question" id="quizQuestion"></div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="quiz-navigation">
+        <button id="previousQuestion" type="button">← Previous</button>
+        <button class="primary" id="nextQuestion" type="button">Next →</button>
+      </div>
+    </section>
+
+    <section class="results-section" id="resultsSection">
+      <div class="results-heading">
+        <p class="eyebrow">Your personal snapshot</p>
+        <h2>Your Lifestyle Pattern Profile</h2>
+        <div class="score-number" id="scoreNumber">0 / 100</div>
+        <div class="score-category" id="scoreCategory"></div>
+      </div>
+      <div class="probability-grid" id="probabilityGrid"></div>
+      <div class="dashboard-grid">
+        <div class="dashboard-card">
+          <h3>Lifestyle dimensions</h3>
+          <div id="metricsContainer"></div>
+        </div>
+        <div class="dashboard-card">
+          <h3>What your answers suggest</h3>
+          <ul class="insight-list good-list" id="goodList"></ul>
+          <h3 style="margin-top:23px;">Gentle areas to explore</h3>
+          <ul class="insight-list improve-list" id="improveList"></ul>
+        </div>
+      </div>
+      <div class="dashboard-card">
+        <h3>Possible lifestyle connections</h3>
+        <ul class="insight-list" id="concernList"></ul>
+        <div class="health-note">These are possible lifestyle-related patterns, not medical diagnoses. Seek urgent medical help for severe or rapidly worsening symptoms.</div>
+      </div>
+      <div class="action-plan">
+        <h3>A practical next-step plan</h3>
+        <div id="actionPlanList"></div>
+        <div class="weekly-progress" id="weeklyProgress">Your weekly progress: 0%</div>
+      </div>
+      <div class="final-cta">
+        <h2>Understand Your Routine. Choose Your Next Step.</h2>
+        <p>Use your profile as a conversation starter with a qualified healthcare professional when needed.</p>
+        <button class="habits-button" id="exploreAgain" type="button">Review Body Signals Again</button>
+        <button class="habits-button secondary" id="retakeQuiz" type="button">Retake Assessment</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2026 MediConnect | Bridging You to Wellness</footer>
+  <div id="google_translate_element"></div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const profileLabels = {
+      sleep: { name: "Sleep and recovery load", description: "Answers suggest that rest, sleep timing or recovery may be influencing your routine." },
+      stress: { name: "Stress and mental load", description: "Answers suggest that stress, pressure or emotional recovery may be important to your current routine." },
+      energy: { name: "Energy and nutrition rhythm", description: "Answers suggest that meals, hydration and daily energy consistency may be useful areas to explore." },
+      movement: { name: "Movement and mobility rhythm", description: "Answers suggest that sitting time, movement breaks or physical activity may be influencing your routine." },
+      screen: { name: "Screen and focus rhythm", description: "Answers suggest that screen exposure, focus breaks or evening device use may be relevant." },
+      balanced: { name: "Balanced routine pattern", description: "Answers are relatively balanced across the main lifestyle dimensions." }
+    };
+
+    const regionData = {
+      head: { title: "Explore your head", text: "Head discomfort can sometimes be associated with sleep, hydration, stress, screen habits or other factors.", symptoms: ["Pain", "Pressure", "Dizziness", "Screen strain", "Other"], speciality: "General Medicine" },
+      chest: { title: "Explore your chest", text: "Chest sensations can have many causes. New, severe or concerning chest symptoms require prompt professional attention.", symptoms: ["Tightness", "Pain", "Breathlessness", "Palpitations", "Other"], speciality: "Cardiology" },
+      stomach: { title: "Explore your stomach", text: "Stomach discomfort may relate to meals, hydration, stress or other factors. Persistent symptoms should be assessed by a professional.", symptoms: ["Pain", "Bloating", "Nausea", "Indigestion", "Other"], speciality: "Gastroenterology" },
+      hand: { title: "Explore your hands", text: "Hand symptoms may be affected by activity, posture, repetitive use or other conditions.", symptoms: ["Pain", "Tingling", "Numbness", "Stiffness", "Other"], speciality: "Orthopaedics" },
+      knee: { title: "Explore your knees", text: "Knee discomfort can be related to movement, strain, posture or previous injury. Avoid pushing through severe pain.", symptoms: ["Pain", "Swelling", "Stiffness", "Instability", "Other"], speciality: "Orthopaedics" },
+      feet: { title: "Explore your feet", text: "Foot discomfort may be influenced by footwear, activity, posture or other factors.", symptoms: ["Pain", "Swelling", "Numbness", "Blisters", "Other"], speciality: "Orthopaedics" }
+    };
+
+    const quizQuestions = [
+      { question: "How would you describe your sleep over the past two weeks?", options: [
+        ["Consistent and refreshing", { sleep: 4, balanced: 2 }], ["I sleep, but do not feel rested", { sleep: 2, energy: 2 }], ["My timing changes often", { sleep: 4, screen: 2 }], ["I regularly struggle to sleep", { sleep: 5, stress: 2 }]
+      ]},
+      { question: "How often do you take movement breaks during a typical day?", options: [
+        ["Every hour or two", { movement: 4, balanced: 2 }], ["A few times a day", { movement: 2 }], ["Only when work or study ends", { movement: 4, screen: 1 }], ["Almost never", { movement: 5, energy: 1 }]
+      ]},
+      { question: "How does your energy usually feel during the day?", options: [
+        ["Steady", { energy: 4, balanced: 2 }], ["Low in the morning", { energy: 3, sleep: 2 }], ["I have afternoon dips", { energy: 4, nutrition: 2 }], ["It changes a lot", { energy: 3, stress: 2 }]
+      ]},
+      { question: "How often do you drink water during the day?", options: [
+        ["Regularly, without reminders", { energy: 3, balanced: 2 }], ["I remember sometimes", { energy: 1 }], ["Mostly when I feel thirsty", { energy: 3, screen: 1 }], ["I often forget", { energy: 4, stress: 1 }]
+      ]},
+      { question: "How would you describe your current stress load?", options: [
+        ["Manageable", { stress: 1, balanced: 3 }], ["Present but I can recover", { stress: 3 }], ["Often difficult to switch off", { stress: 5, sleep: 1 }], ["It affects my body or routine", { stress: 6, energy: 1 }]
+      ]},
+      { question: "How much of your day is spent sitting or at a desk?", options: [
+        ["Less than four hours", { movement: 4, balanced: 2 }], ["Four to six hours", { movement: 2 }], ["Six to eight hours", { movement: 4, screen: 2 }], ["Most of the day", { movement: 6, screen: 1 }]
+      ]},
+      { question: "What usually happens with your meals?", options: [
+        ["Regular and varied", { nutrition: 5, balanced: 3 }], ["Mostly regular", { nutrition: 3 }], ["Timing changes often", { nutrition: 4, energy: 2 }], ["I skip or delay meals frequently", { nutrition: 6, energy: 2 }]
+      ]},
+      { question: "How much screen time do you have close to bedtime?", options: [
+        ["Very little", { screen: 1, sleep: 3 }], ["Some, but I stop before bed", { screen: 2 }], ["I often use a screen in bed", { screen: 5, sleep: 3 }], ["It is difficult to stop", { screen: 6, stress: 2 }]
+      ]},
+      { question: "When something feels stressful, what helps you recover?", options: [
+        ["Movement, breathing or a break", { stress: 2, movement: 2, balanced: 2 }], ["Talking to someone", { stress: 2, balanced: 2 }], ["I keep working or studying", { stress: 5, screen: 1 }], ["I am not sure what helps", { stress: 4, sleep: 1 }]
+      ]},
+      { question: "How often do you do physical activity that feels intentional?", options: [
+        ["Most days", { movement: 5, balanced: 2 }], ["Two or three days a week", { movement: 3 }], ["Occasionally", { movement: 2, energy: 1 }], ["Rarely", { movement: 5, energy: 2 }]
+      ]},
+      { question: "How easy is it for you to focus without checking your phone?", options: [
+        ["Usually easy", { screen: 1, balanced: 3 }], ["I check it sometimes", { screen: 2 }], ["I lose focus often", { screen: 4, stress: 2 }], ["It is very difficult", { screen: 6, stress: 2 }]
+      ]},
+      { question: "Which change feels most realistic for the next seven days?", options: [
+        ["A more regular sleep window", { sleep: 4 }], ["Short movement breaks", { movement: 4 }], ["Regular meals and water", { energy: 4, nutrition: 2 }], ["A calmer screen-free wind-down", { screen: 4, stress: 2 }]
+      ]}
+    ];
+
+    let selectedRegion = "head";
+    let selectedSymptoms = [];
+    let quizIndex = 0;
+    let quizAnswers = [];
+    let auditState = JSON.parse(localStorage.getItem("mediconnectWellnessAudit") || "null") || { goal: "sleep", time: "5", routine: "student" };
+
+    function escapeHTML(value) { return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;"); }
+
+    function updateAudit() {
+      const recommendations = {
+        sleep: { student: "Protect a consistent sleep window, reduce screens before bed and use a short wind-down routine.", professional: "Keep work away from your sleep window and create a repeatable evening transition.", general: "Focus on regular sleep timing, a calmer evening routine and reduced screen exposure." },
+        energy: { student: "Keep water nearby, choose regular meals and take short movement breaks between study sessions.", professional: "Add movement breaks, hydration reminders and a consistent meal rhythm during workdays.", general: "Support energy with hydration, varied meals, movement and consistent rest." },
+        stress: { student: "Try a short breathing break, a realistic study plan and one supportive conversation.", professional: "Create boundaries between work and recovery, with small breaks that you can repeat.", general: "Use regular pauses, supportive connection and a simple evening reset." },
+        fitness: { student: "Start with short movement blocks that fit between classes or study sessions.", professional: "Schedule brief movement breaks and one longer activity block when possible.", general: "Build consistency with safe, enjoyable movement rather than sudden intensity." }
+      };
+      $("auditRecommendation").textContent = recommendations[auditState.goal][auditState.routine];
+      $("auditTime").textContent = `${auditState.time} min/day`;
+      localStorage.setItem("mediconnectWellnessAudit", JSON.stringify(auditState));
+    }
+
+    document.querySelectorAll(".audit-choice").forEach((button) => button.addEventListener("click", () => {
+      document.querySelectorAll(`[data-group="${button.dataset.group}"]`).forEach((item) => item.classList.remove("active"));
+      button.classList.add("active");
+      auditState[button.dataset.group] = button.dataset.value;
+      updateAudit();
+    }));
+
+    function renderSymptoms() {
+      const data = regionData[selectedRegion];
+      $("selectedRegionTitle").textContent = data.title;
+      $("selectedRegionText").textContent = data.text;
+      $("symptomOptions").innerHTML = data.symptoms.map((symptom) => `
+        <label class="symptom-option"><input type="checkbox" value="${escapeHTML(symptom)}">${escapeHTML(symptom)}</label>
+      `).join("");
+      selectedSymptoms = [];
+      $("symptomResponse").classList.remove("visible");
+      $("bodyConnectBox").hidden = true;
+    }
+
+    document.querySelectorAll(".area-button").forEach((button) => button.addEventListener("click", () => {
+      document.querySelectorAll(".area-button").forEach((item) => item.classList.remove("selected"));
+      button.classList.add("selected");
+      selectedRegion = button.dataset.region;
+      renderSymptoms();
+    }));
+
+    $("symptomOptions").addEventListener("change", (event) => {
+      if (!event.target.matches("input")) return;
+      const label = event.target.closest(".symptom-option");
+      label.classList.toggle("selected", event.target.checked);
+      selectedSymptoms = [...document.querySelectorAll("#symptomOptions input:checked")].map((input) => input.value);
+    });
+
+    async function saveHealthIssue() {
+      const payload = { region: selectedRegion, symptoms: selectedSymptoms, details: $("symptomDetails").value.trim(), severity: $("bodySeverity").value, duration: $("bodyDuration").value, recommendedSpeciality: regionData[selectedRegion].speciality };
+      try {
+        await fetch("/api/health-issues", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      } catch { /* Awareness remains usable if the API is temporarily unavailable. */ }
+    }
+
+    $("understandSymptoms").addEventListener("click", async () => {
+      const data = regionData[selectedRegion];
+      const response = $("symptomResponse");
+      const severity = $("bodySeverity").value;
+      const symptomText = selectedSymptoms.length ? selectedSymptoms.join(", ") : "No specific symptom selected";
+      response.innerHTML = `<h4>General awareness summary</h4><p>You recorded <strong>${escapeHTML(symptomText)}</strong> in the ${escapeHTML(selectedRegion)} area with ${escapeHTML(severity.toLowerCase())} severity. A qualified professional can help interpret this in context.</p><ul><li>Notice whether the feeling changes with rest, movement, meals, hydration or stress.</li><li>Record when it started and whether it is becoming more frequent.</li><li>Seek urgent care for severe, sudden or rapidly worsening symptoms.</li></ul>`;
+      response.classList.add("visible");
+      $("bodyConnectBox").hidden = false;
+      await saveHealthIssue();
+    });
+
+    $("bodyConnectButton").addEventListener("click", () => { window.location.href = `doctors.html?speciality=${encodeURIComponent(regionData[selectedRegion].speciality)}`; });
+
+    document.querySelectorAll(".feel-suggestions button").forEach((button) => button.addEventListener("click", () => { $("feelingInput").value = button.dataset.feeling; }));
+    $("understandFeeling").addEventListener("click", () => {
+      const text = $("feelingInput").value.trim();
+      const response = $("feelResponse");
+      if (!text) { response.innerHTML = "<h4>Tell us a little more</h4><p>A short description will help organise the general wellness prompts.</p>"; }
+      else { response.innerHTML = `<h4>Possible lifestyle prompts</h4><p>For “${escapeHTML(text)}”, consider checking your recent sleep, hydration, meal timing, movement breaks and stress load. If the concern persists or affects daily life, contact a qualified healthcare professional.</p>`; }
+      response.classList.add("visible");
+    });
+
+    function renderQuiz() {
+      const item = quizQuestions[quizIndex];
+      $("quizCounter").textContent = `Question ${String(quizIndex + 1).padStart(2, "0")} / ${quizQuestions.length}`;
+      $("quizProgress").style.width = `${((quizIndex + 1) / quizQuestions.length) * 100}%`;
+      $("quizQuestion").textContent = item.question;
+      $("quizOptions").innerHTML = item.options.map(([label], index) => `
+        <label class="quiz-option ${quizAnswers[quizIndex] === index ? "selected" : ""}"><input type="radio" name="quizAnswer" value="${index}" ${quizAnswers[quizIndex] === index ? "checked" : ""}>${escapeHTML(label)}</label>
+      `).join("");
+      $("previousQuestion").disabled = quizIndex === 0;
+      $("nextQuestion").textContent = quizIndex === quizQuestions.length - 1 ? "See my profile →" : "Next →";
+    }
+
+    $("quizOptions").addEventListener("change", (event) => {
+      if (!event.target.matches("input")) return;
+      quizAnswers[quizIndex] = Number(event.target.value);
+      document.querySelectorAll(".quiz-option").forEach((item) => item.classList.remove("selected"));
+      event.target.closest(".quiz-option").classList.add("selected");
+    });
+
+    $("previousQuestion").addEventListener("click", () => { if (quizIndex > 0) { quizIndex -= 1; renderQuiz(); } });
+    $("nextQuestion").addEventListener("click", () => {
+      if (quizAnswers[quizIndex] === undefined) { $("quizQuestion").animate([{ opacity: .45 }, { opacity: 1 }], { duration: 280 }); return; }
+      if (quizIndex < quizQuestions.length - 1) { quizIndex += 1; renderQuiz(); } else showResults();
+    });
+
+    function calculateProfile() {
+      const dimensions = { sleep: 0, stress: 0, energy: 0, movement: 0, screen: 0, balanced: 0 };
+      const rawDimensions = { sleep: 0, stress: 0, energy: 0, movement: 0, screen: 0 };
+      quizAnswers.forEach((answerIndex, questionIndex) => {
+        const weights = quizQuestions[questionIndex].options[answerIndex][1];
+        Object.entries(weights).forEach(([key, value]) => { if (key in dimensions) dimensions[key] += value; if (key in rawDimensions) rawDimensions[key] += value; });
+      });
+      const total = Object.values(dimensions).reduce((sum, value) => sum + value, 0) || 1;
+      const probabilities = Object.fromEntries(Object.entries(dimensions).map(([key, value]) => [key, Math.round((value / total) * 100)]));
+      return { dimensions: rawDimensions, probabilities };
+    }
+
+    function showResults() {
+      const { dimensions, probabilities } = calculateProfile();
+      const ranked = Object.entries(probabilities).sort((a, b) => b[1] - a[1]);
+      const primary = ranked[0];
+      const overall = Math.round(Object.values(probabilities).reduce((sum, value) => sum + value, 0) / Object.keys(probabilities).length);
+      $("scoreNumber").textContent = `${overall} / 100`;
+      $("scoreCategory").textContent = `${profileLabels[primary[0]].name} is the strongest pattern in your responses.`;
+      $("probabilityGrid").innerHTML = ranked.map(([key, value], index) => `<article class="probability-card ${index === 0 ? "top" : ""}"><h3>${escapeHTML(profileLabels[key].name)}</h3><p>${escapeHTML(profileLabels[key].description)}</p><span class="probability-value">${value}% relative likelihood</span></article>`).join("");
+      const max = Math.max(...Object.values(dimensions), 1);
+      $("metricsContainer").innerHTML = Object.entries(dimensions).map(([key, value]) => `<div class="metric"><div class="metric-label"><span>${escapeHTML(profileLabels[key].name.replace(" load", "").replace(" rhythm", ""))}</span><span>${Math.round((value / max) * 100)}%</span></div><div class="metric-track"><div class="metric-value" style="width:${Math.round((value / max) * 100)}%"></div></div></div>`).join("");
+      const good = ranked.slice(0, 2).map(([key]) => `Your answers give you a useful starting point for exploring ${profileLabels[key].name.toLowerCase()}.`);
+      const improve = ranked.slice(-2).reverse().map(([key]) => `You may benefit from a small, repeatable experiment related to ${profileLabels[key].name.toLowerCase()}.`);
+      $("goodList").innerHTML = good.map((item) => `<li>${escapeHTML(item)}</li>`).join("");
+      $("improveList").innerHTML = improve.map((item) => `<li>${escapeHTML(item)}</li>`).join("");
+      $("concernList").innerHTML = ranked.slice(0, 3).map(([key]) => `<li>${escapeHTML(profileLabels[key].description)}</li>`).join("");
+      const actions = ["Choose one small change you can repeat for seven days.", `Create a short daily check-in around ${profileLabels[primary[0]].name.toLowerCase()}.`, "If a symptom is persistent or concerning, discuss it with a qualified healthcare professional."];
+      $("actionPlanList").innerHTML = actions.map((item) => `<label class="action-item"><input type="checkbox">${escapeHTML(item)}</label>`).join("");
+      $("resultsSection").classList.add("visible");
+      $("resultsSection").scrollIntoView({ behavior: "smooth", block: "start" });
+      saveAssessment({ dimensions, probabilities, primaryPattern: primary[0], score: overall, answers: quizAnswers });
+    }
+
+    async function saveAssessment(result) {
+      try { await fetch("/api/wellness-assessments", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(result) }); } catch { /* Results remain available locally if the API is unavailable. */ }
+    }
+
+    $("retakeQuiz").addEventListener("click", () => { quizIndex = 0; quizAnswers = []; $("resultsSection").classList.remove("visible"); renderQuiz(); $("quizSection").scrollIntoView({ behavior: "smooth" }); });
+    $("exploreAgain").addEventListener("click", () => $("body-section").scrollIntoView({ behavior: "smooth" }));
+
+    async function showAdminLink() {
+      try { const response = await fetch("/api/auth/me", { credentials: "include" }); if (response.ok) { const user = await response.json(); if (["admin", "super_admin"].includes(user.role)) $("adminNavItem").hidden = false; } } catch { }
+    }
+
+    function googleTranslateElementInit() { new google.translate.TranslateElement({ pageLanguage: "en", includedLanguages: "en,hi,mr,gu,ur,ta,te,ml,kn,bn,pa", autoDisplay: false }, "google_translate_element"); }
+    function changeLanguage(languageCode, attempt = 0) { const dropdown = document.querySelector(".goog-te-combo"); if (dropdown) { dropdown.value = languageCode; dropdown.dispatchEvent(new Event("change")); return; } if (attempt < 10) setTimeout(() => changeLanguage(languageCode, attempt + 1), 400); }
+
+    updateAudit();
+    renderSymptoms();
+    renderQuiz();
+    showAdminLink();
+  </script>
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script src="site-shell.js"></script>
+</body>
+</html>

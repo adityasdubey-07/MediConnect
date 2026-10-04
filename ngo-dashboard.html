@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    if (window.location.protocol === "file:") {
+      const localBase = document.createElement("base");
+      localBase.href = "http://localhost:3000/";
+      document.head.appendChild(localBase);
+    }
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediConnect | NGO Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="site-shell.css" />
+  <style>
+    :root { --ink:#183735; --muted:#6b807d; --line:#dce9e6; --teal:#0f766e; --soft:#e8f5f2; --page:#f5f8f8; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--page); color:var(--ink); font-family:Arial,Helvetica,sans-serif; }
+    button,input,select,textarea { font:inherit; }
+    .ngo-page { max-width:1240px; margin:auto; padding:34px 22px 70px; }
+    .ngo-header { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; margin-bottom:24px; }
+    h1 { margin:0 0 7px; font-size:30px; }
+    h2 { margin:0 0 7px; font-size:20px; }
+    p { margin:0; color:var(--muted); line-height:1.6; }
+    .status { padding:9px 13px; border:1px solid var(--line); border-radius:999px; background:#fff; color:var(--muted); font-size:12px; font-weight:700; }
+    .status.ready { color:#15803d; background:#f0fdf4; }
+    .layout { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr); gap:22px; }
+    .card { padding:24px; border:1px solid var(--line); border-radius:16px; background:#fff; box-shadow:0 10px 28px rgba(20,70,64,.07); }
+    .card-head { display:flex; justify-content:space-between; align-items:flex-start; gap:15px; margin-bottom:20px; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .full { grid-column:1 / -1; }
+    label { display:block; margin-bottom:6px; color:#385653; font-size:12px; font-weight:700; }
+    input,select,textarea { width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:9px; background:#fbfdfd; color:var(--ink); outline:none; }
+    textarea { min-height:116px; resize:vertical; }
+    input:focus,select:focus,textarea:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(15,118,110,.1); background:#fff; }
+    .actions { display:flex; justify-content:flex-end; gap:9px; margin-top:20px; }
+    .button { padding:10px 14px; border:0; border-radius:8px; background:var(--teal); color:#fff; cursor:pointer; font-size:12px; font-weight:700; }
+    .button.secondary { background:var(--soft); color:#115e59; }
+    .button:disabled { opacity:.55; cursor:not-allowed; }
+    .campaign-list { display:flex; flex-direction:column; gap:12px; max-height:720px; overflow:auto; }
+    .campaign-item { padding:16px; border:1px solid var(--line); border-radius:12px; }
+    .campaign-item h3 { margin:0 0 6px; font-size:15px; }
+    .campaign-item p { font-size:12px; }
+    .campaign-meta { display:flex; flex-wrap:wrap; gap:7px; margin:12px 0; }
+    .campaign-meta span { padding:5px 8px; border-radius:999px; background:var(--soft); color:#115e59; font-size:10px; font-weight:700; }
+    .empty { padding:35px 14px; color:var(--muted); text-align:center; font-size:13px; }
+    .message { display:none; margin-bottom:16px; padding:12px 14px; border-radius:9px; font-size:13px; }
+    .message.show { display:block; }
+    .message.error { background:#fee2e2; color:#b91c1c; }
+    .message.success { background:#dcfce7; color:#15803d; }
+    @media(max-width:900px) { .layout { grid-template-columns:1fr; } }
+    @media(max-width:600px) { .ngo-page { padding:24px 15px 55px; } .ngo-header { display:block; } .status { display:inline-block; margin-top:14px; } .form-grid { grid-template-columns:1fr; } .full { grid-column:auto; } .actions { flex-direction:column; } .actions .button { width:100%; } }
+  </style>
+  <link rel="stylesheet" href="site-shell.css" data-theme-refresh>
+</head>
+<body>
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="doctors.html">Find Care</a></li>
+      <li><a href="vaccination.html">Vaccination Updates</a></li>
+      <li><a href="chatbot.html">MediGuide</a></li>
+      <li><a href="habits.html">Healthy Habits</a></li>
+    </ul>
+  </nav>
+
+  <main class="ngo-page">
+    <header class="ngo-header">
+      <div><h1>NGO dashboard</h1><p>Publish and manage verified community health campaigns from one workspace.</p></div>
+      <span class="status" id="ngoStatus">Checking access...</span>
+    </header>
+    <div class="message" id="ngoMessage"></div>
+
+    <div class="layout">
+      <section class="card">
+        <div class="card-head"><div><h2>Publish a campaign</h2><p>Published campaigns become visible on the MediConnect home page immediately.</p></div></div>
+        <form id="campaignForm">
+          <div class="form-grid">
+            <div class="full"><label for="title">Campaign title *</label><input id="title" required maxlength="220" placeholder="Example: Community Heart Health Screening" /></div>
+            <div><label for="objective">Objective *</label><input id="objective" required maxlength="300" placeholder="What will this initiative achieve?" /></div>
+            <div><label for="category">Category *</label><select id="category" required><option value="">Select category</option><option>Preventive Care</option><option>Screening</option><option>Vaccination</option><option>Mental Wellness</option><option>Maternal and Child Health</option><option>Nutrition</option><option>Health Education</option><option>Emergency Relief</option></select></div>
+            <div class="full"><label for="description">Campaign description *</label><textarea id="description" required maxlength="6000" placeholder="Provide clear, public-facing details about the programme, eligibility and how people can participate."></textarea></div>
+            <div><label for="location">Location *</label><input id="location" required maxlength="180" placeholder="City, district or service area" /></div>
+            <div><label for="startAt">Start date *</label><input id="startAt" type="date" required /></div>
+            <div><label for="endAt">End date</label><input id="endAt" type="date" /></div>
+            <div><label for="contactPhone">Campaign contact phone</label><input id="contactPhone" type="tel" placeholder="Optional public contact number" /></div>
+            <div><label for="contactEmail">Campaign contact email</label><input id="contactEmail" type="email" placeholder="Optional public email" /></div>
+            <div><label for="website">Campaign website</label><input id="website" type="url" placeholder="https://example.org" /></div>
+            <div><label for="supportingUrl">Supporting resource link</label><input id="supportingUrl" type="url" placeholder="Optional brochure, registration or resource link" /></div>
+          </div>
+          <div class="actions"><button class="button secondary" type="reset">Clear</button><button class="button" type="submit" id="publishButton">Publish campaign</button></div>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><div><h2>Your campaigns</h2><p>Review the initiatives currently associated with your NGO profile.</p></div><button class="button secondary" id="refreshCampaigns" type="button">Refresh</button></div>
+        <div class="campaign-list" id="campaignList"><div class="empty">Loading campaigns...</div></div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const escapeHTML = (value) => String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+    const showMessage = (message, type) => { $("ngoMessage").textContent = message; $("ngoMessage").className = `message show ${type}`; };
+    const dateLabel = (value) => value ? new Date(value).toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" }) : "Open-ended";
+
+    async function api(url, options = {}) {
+      const response = await fetch(url, { credentials:"include", ...options });
+      const data = await response.json().catch(() => ({}));
+      if (response.status === 401) { location.href = "login.html?redirect=ngo-dashboard.html"; throw new Error("Please sign in to continue."); }
+      if (!response.ok) throw new Error(data.message || "The request could not be completed.");
+      return data;
+    }
+
+    async function checkAccess() {
+      try {
+        const user = await api("/api/auth/me");
+        if (!["ngo"].includes(user.role)) throw new Error("Only verified NGO accounts can access this workspace.");
+        $("ngoStatus").textContent = "Verified NGO access";
+        $("ngoStatus").classList.add("ready");
+        await loadCampaigns();
+      } catch (error) { $("ngoStatus").textContent = "Access unavailable"; showMessage(error.message, "error"); }
+    }
+
+    async function loadCampaigns() {
+      try {
+        const campaigns = await api("/api/ngo/campaigns");
+        $("campaignList").innerHTML = campaigns.length ? campaigns.map((campaign) => `<article class="campaign-item"><h3>${escapeHTML(campaign.title)}</h3><p>${escapeHTML(campaign.description)}</p><div class="campaign-meta"><span>${escapeHTML(campaign.category)}</span><span>${escapeHTML(campaign.location)}</span><span>${dateLabel(campaign.startAt)}${campaign.endAt ? ` – ${dateLabel(campaign.endAt)}` : ""}</span><span>${escapeHTML(campaign.status)}</span></div><p><strong>Objective:</strong> ${escapeHTML(campaign.objective)}</p>${campaign.supportingUrl ? `<p style="margin-top:8px"><a href="${escapeHTML(campaign.supportingUrl)}" target="_blank" rel="noopener noreferrer" style="color:#0f766e;font-weight:700">Open supporting resource →</a></p>` : ""}</article>`).join("") : '<div class="empty">No campaigns have been published yet.</div>';
+      } catch (error) { $("campaignList").innerHTML = `<div class="empty">${escapeHTML(error.message)}</div>`; }
+    }
+
+    $("campaignForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      $("publishButton").disabled = true;
+      try {
+        const payload = { title:$("title").value, objective:$("objective").value, category:$("category").value, description:$("description").value, location:$("location").value, startAt:$("startAt").value, endAt:$("endAt").value, contactPhone:$("contactPhone").value, contactEmail:$("contactEmail").value, website:$("website").value, supportingUrl:$("supportingUrl").value };
+        await api("/api/ngo/campaigns", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(payload) });
+        showMessage("Campaign published successfully and is now visible on the home page.", "success");
+        localStorage.setItem("mediconnectCampaignUpdated", String(Date.now()));
+        event.target.reset();
+        await loadCampaigns();
+      } catch (error) { showMessage(error.message, "error"); }
+      finally { $("publishButton").disabled = false; }
+    });
+    $("refreshCampaigns").addEventListener("click", loadCampaigns);
+    checkAccess();
+  </script>
+  <script src="site-shell.js"></script>
+</body>
+</html>

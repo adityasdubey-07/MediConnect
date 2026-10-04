@@ -1,0 +1,1030 @@
+/* Shared MediConnect footer and language controls */
+
+.site-footer {
+  position: relative;
+  margin-top: 42px;
+  border-top: 1px solid rgba(120, 223, 197, 0.18);
+  background: linear-gradient(145deg, #082b3a 0%, #0b3f49 55%, #103e43 100%);
+  color: #f4fffc;
+  overflow: hidden;
+}
+
+.site-footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .42;
+  background:
+    radial-gradient(circle at 86% 12%, rgba(156, 235, 212, .13), transparent 27%),
+    linear-gradient(90deg, transparent 0 72%, rgba(255, 255, 255, .025) 72% 72.15%, transparent 72.15% 100%);
+}
+
+.site-footer-inner,
+.site-footer-bottom {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.site-footer-inner {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.25fr) minmax(180px, .8fr) minmax(210px, .9fr);
+  gap: 36px;
+  padding: 42px 0 34px;
+}
+
+.site-footer-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.site-footer-eyebrow {
+  margin: 0 0 10px;
+  color: #9cebd4;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.site-footer-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.site-footer-mark {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid rgba(168, 242, 220, .3);
+  border-radius: 11px;
+  background: rgba(168, 242, 220, .14);
+  color: #a8f2dc;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.site-footer-brand strong {
+  color: #f4fffc;
+  font-size: 1rem;
+  letter-spacing: .01em;
+}
+
+.site-footer-brand p,
+.site-footer-note {
+  max-width: 310px;
+  margin: 14px 0 0;
+  color: rgba(244, 255, 252, .68);
+  font-size: .78rem;
+  line-height: 1.7;
+}
+
+.site-footer-title {
+  margin: 2px 0 13px;
+  color: #9cebd4;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.site-footer-links {
+  display: grid;
+  gap: 9px;
+}
+
+#site-footer-account-links {
+  display: contents;
+}
+
+.site-footer-links a,
+.site-footer-admin {
+  width: fit-content;
+  color: rgba(244, 255, 252, .77);
+  font-size: .78rem;
+  text-decoration: none;
+  transition: color .2s ease, transform .2s ease;
+}
+
+.site-footer-links a:hover,
+.site-footer-admin:hover {
+  color: #a8f2dc;
+  transform: translateX(2px);
+}
+
+.site-footer-language {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.site-footer-language label {
+  margin-bottom: 9px;
+  color: rgba(244, 255, 252, .76);
+  font-size: .76rem;
+  font-weight: 600;
+}
+
+.site-footer-language select {
+  width: min(100%, 220px);
+  padding: 10px 12px;
+  border: 1px solid rgba(168, 242, 220, .28);
+  border-radius: 9px;
+  outline: none;
+  background: rgba(0, 0, 0, .15);
+  color: #f4fffc;
+  font-family: inherit;
+  font-size: .76rem;
+  cursor: pointer;
+}
+
+.site-footer-language select:focus {
+  border-color: #a8f2dc;
+  box-shadow: 0 0 0 3px rgba(168, 242, 220, .12);
+}
+
+.site-footer-language option {
+  background: #eaf7f3;
+  color: #14322f;
+}
+
+.site-footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0 21px;
+  border-top: 1px solid rgba(255, 255, 255, .1);
+  color: rgba(244, 255, 252, .54);
+  font-size: .68rem;
+  line-height: 1.5;
+}
+
+.site-footer-bottom span:last-of-type {
+  text-align: right;
+}
+
+.site-footer-admin {
+  color: #9cebd4;
+  font-size: .7rem;
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  .site-footer-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 22px;
+  }
+
+  .site-footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .site-footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .site-footer-bottom span:last-of-type {
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-footer-inner,
+  .site-footer-bottom {
+    width: min(100% - 28px, 1180px);
+  }
+
+  .site-footer-inner {
+    grid-template-columns: 1fr;
+    padding: 32px 0 27px;
+  }
+
+  .site-footer-brand {
+    grid-column: auto;
+  }
+}
+
+/* =====================================================
+   MediConnect brand refresh — professional navy / warm off-white
+   Shared layer loaded after page-specific styles.
+===================================================== */
+
+:root {
+  --navy: #102a43;
+  --navy-light: #183b5b;
+  --teal: #234f78;
+  --teal-light: #7395b4;
+  --white: #19344f;
+  --muted: #657588;
+  --soft: #8b98a7;
+  --border: #dbe3ea;
+  --card: #ffffff;
+  --card-soft: #f4f7fa;
+  --shadow: 0 12px 30px rgba(16, 42, 67, .08);
+  --bg: #f7f5f0;
+  --bg-light: #fbfaf7;
+  --panel: #ffffff;
+  --panel-light: #f4f7fa;
+  --text: #19344f;
+  --green: #234f78;
+  --green-dark: #173c60;
+  --blue-soft: #4d7da8;
+  --yellow: #9a6a1f;
+  --red-soft: #b64d4d;
+}
+
+html,
+body {
+  background: #f7f5f0 !important;
+  color: #19344f !important;
+}
+
+body {
+  font-family: "Poppins", Arial, sans-serif !important;
+}
+
+.navbar {
+  background: rgba(255, 255, 255, .96) !important;
+  border-bottom: 1px solid #dbe3ea !important;
+  box-shadow: 0 4px 18px rgba(16, 42, 67, .045);
+  backdrop-filter: blur(12px);
+}
+
+.navbar a,
+.navbar ul li a {
+  color: #526579 !important;
+}
+
+.navbar a:hover,
+.navbar a.active,
+.navbar ul li a:hover,
+.navbar ul li a.active {
+  color: #102a43 !important;
+}
+
+.navbar a.active::after,
+.navbar ul li a.active::after {
+  background: #102a43 !important;
+}
+
+.language-switcher,
+.language-switcher label {
+  color: #657588 !important;
+}
+
+.language-switcher select {
+  color: #19344f !important;
+  border-color: #d2dce5 !important;
+  background: #ffffff !important;
+}
+
+.hero,
+.healthy-ways,
+.health-tips,
+.health-calculator,
+.vaccination-tracker,
+.news-wrapper {
+  border-color: #dbe3ea !important;
+  background: #ffffff !important;
+  box-shadow: 0 12px 30px rgba(16, 42, 67, .08) !important;
+}
+
+.hero {
+  background: #102a43 !important;
+}
+
+.hero-text h1,
+.hero-text p,
+.hero-text p:first-of-type {
+  color: #ffffff !important;
+}
+
+.hero-text p:first-of-type,
+.hero-text h1::after {
+  color: #b9d1e4 !important;
+  background: #b9d1e4 !important;
+}
+
+.hero-button,
+.calc-widget button,
+.location-input button {
+  color: #ffffff !important;
+  background: #102a43 !important;
+}
+
+.hero-button:hover,
+.calc-widget button:hover,
+.location-input button:hover {
+  background: #183b5b !important;
+}
+
+.healthy-ways h2,
+.health-tips h2,
+.health-calculator h2,
+.vaccination-tracker h2,
+.general-news h2,
+.location-news h2,
+.tool-card h3,
+.news-card h3,
+.tip,
+.media-caption strong {
+  color: #19344f !important;
+}
+
+.section-description,
+.benefit,
+.tool-description,
+.way-card small,
+.news-card p,
+.news-note {
+  color: #657588 !important;
+}
+
+.way-card,
+.tool-card,
+.news-card,
+.media-card,
+.calc-video,
+.tracker-video {
+  border-color: #dbe3ea !important;
+  background: #ffffff !important;
+  color: #19344f !important;
+  box-shadow: 0 8px 22px rgba(16, 42, 67, .055);
+}
+
+.way-card:hover {
+  border-color: #7395b4 !important;
+  background: #f4f7fa !important;
+}
+
+.tool-label,
+.media-caption span,
+.news-card a,
+#vaccine-list a,
+#bmi-result {
+  color: #234f78 !important;
+}
+
+.calc-widget input,
+.tracker-widget select,
+.location-input input,
+#messageInput,
+input,
+select,
+textarea {
+  color: #19344f !important;
+  border-color: #d2dce5 !important;
+  background: #ffffff !important;
+}
+
+.calc-widget input::placeholder,
+.location-input input::placeholder,
+#messageInput::placeholder {
+  color: #8b98a7 !important;
+}
+
+#vaccine-list li {
+  color: #526579 !important;
+  background: #f1f5f8 !important;
+}
+
+#vaccine-list li::before {
+  color: #234f78 !important;
+}
+
+.media-card::after {
+  background: linear-gradient(transparent, rgba(16, 42, 67, .82)) !important;
+}
+
+/* MediGuide and vaccination information pages */
+.page,
+.disclaimer {
+  color: #19344f !important;
+}
+
+.page-heading h1,
+.page-heading h1 span,
+.page-heading p:last-child,
+.eyebrow,
+.section-top h2,
+.journey-heading h2,
+.info-box h2,
+.counter {
+  color: #19344f !important;
+}
+
+.page-heading h1::after {
+  background: #234f78 !important;
+}
+
+.intro-card,
+.info-box,
+.journey-section,
+.myth-fact-section,
+.assistant-info,
+.chat-panel,
+.voice-settings,
+.timeline-panel,
+.shield-panel,
+.filter-row,
+.doctor-connect-panel {
+  border-color: #dbe3ea !important;
+  background: #ffffff !important;
+  color: #19344f !important;
+  box-shadow: 0 12px 30px rgba(16, 42, 67, .08) !important;
+}
+
+.intro-card p,
+.info-box p,
+.journey-heading p:last-child,
+.section-top p,
+.assistant-info > p,
+.setting-row,
+.language-note,
+.timeline-info small,
+.disclaimer,
+.message-time {
+  color: #657588 !important;
+}
+
+.intro-icon,
+.mini-avatar {
+  background: #edf3f8 !important;
+}
+
+.profile-button,
+.status-button,
+.suggestions button,
+.clear-button {
+  border-color: #d2dce5 !important;
+  background: #f7f9fb !important;
+  color: #526579 !important;
+}
+
+.profile-button:hover,
+.profile-button.active,
+.status-button:hover,
+.suggestions button:hover,
+.clear-button:hover {
+  border-color: #7395b4 !important;
+  background: #edf3f8 !important;
+  color: #19344f !important;
+}
+
+.shield-panel,
+.timeline-panel {
+  background: #f4f7fa !important;
+}
+
+.shield {
+  background: linear-gradient(145deg, #183b5b, #102a43) !important;
+}
+
+.shield::before {
+  background: rgba(255, 255, 255, .08) !important;
+}
+
+.chat-header,
+.input-area {
+  border-color: #dbe3ea !important;
+}
+
+.messages {
+  background: #fbfcfd !important;
+}
+
+.message.assistant .message-bubble {
+  background: #f1f5f8 !important;
+  color: #19344f !important;
+}
+
+.message.user .message-bubble,
+.send-button,
+.mic-button:hover,
+.mic-button.listening {
+  color: #ffffff !important;
+  background: #234f78 !important;
+}
+
+#messageInput {
+  background: #ffffff !important;
+}
+
+.toggle-slider {
+  background: #aab7c4 !important;
+}
+
+.toggle input:checked + .toggle-slider,
+.shield-progress span,
+.typing span {
+  background: #234f78 !important;
+}
+
+/* Dashboards using the shared stylesheet */
+.dashboard-page,
+.directory-page,
+.auth-page,
+.habits-page {
+  color: #19344f !important;
+}
+
+.dashboard-card,
+.directory-hero,
+.directory-panel,
+.provider-card,
+.auth-shell,
+.symptom-panel,
+.feel-section,
+.probability-card,
+.dashboard-card,
+.action-plan,
+.results-section {
+  border-color: #dbe3ea !important;
+  background: #ffffff !important;
+  color: #19344f !important;
+  box-shadow: 0 12px 30px rgba(16, 42, 67, .08) !important;
+}
+
+.body-video-card {
+  border-color: #dbe3ea !important;
+  background: #102a43 !important;
+}
+
+/* NGO dashboard */
+.ngo-page {
+  color: #19344f !important;
+}
+
+.ngo-page .card {
+  border-color: #dbe3ea !important;
+  background: #ffffff !important;
+  box-shadow: 0 12px 30px rgba(16, 42, 67, .08) !important;
+}
+
+.ngo-page .button {
+  background: #102a43 !important;
+}
+
+.ngo-page .button.secondary,
+.ngo-page .campaign-meta span {
+  background: #edf3f8 !important;
+  color: #234f78 !important;
+}
+
+/* Admin panel */
+.topbar,
+.status,
+.stat,
+.panel,
+.tabs,
+.modal {
+  border-color: #dbe3ea !important;
+  background: #ffffff !important;
+  box-shadow: 0 12px 30px rgba(16, 42, 67, .06) !important;
+}
+
+.topbar .brand,
+.brand {
+  color: #102a43 !important;
+}
+
+.topbar .mark,
+.brand-mark {
+  background: #102a43 !important;
+}
+
+.nav a:hover,
+.nav a.active,
+.tab:hover,
+.tab.active {
+  background: #edf3f8 !important;
+  color: #19344f !important;
+}
+
+.primary,
+.button.primary {
+  background: #102a43 !important;
+}
+
+.primary:hover,
+.button.primary:hover {
+  background: #183b5b !important;
+}
+
+/* Shared footer: solid navy, quiet and editorial rather than decorative */
+.site-footer {
+  border-top: 1px solid #183b5b !important;
+  background: #102a43 !important;
+  color: #f5f8fb !important;
+}
+
+.site-footer::before {
+  opacity: .12 !important;
+  background: linear-gradient(90deg, transparent 0 72%, rgba(255,255,255,.08) 72% 72.15%, transparent 72.15% 100%) !important;
+}
+
+.site-footer-eyebrow,
+.site-footer-title,
+.site-footer-admin,
+.site-footer-links a:hover,
+.site-footer-admin:hover {
+  color: #b9d1e4 !important;
+}
+
+.site-footer-mark {
+  border-color: rgba(185, 209, 228, .34) !important;
+  background: rgba(185, 209, 228, .12) !important;
+  color: #d9e8f3 !important;
+}
+
+.site-footer-brand strong {
+  color: #ffffff !important;
+}
+
+.site-footer-brand p,
+.site-footer-note,
+.site-footer-language label,
+.site-footer-bottom {
+  color: rgba(245, 248, 251, .68) !important;
+}
+
+.site-footer-language select {
+  border-color: rgba(185, 209, 228, .35) !important;
+  background: #183b5b !important;
+  color: #ffffff !important;
+}
+
+
+/* Home page feature cards */
+.pulse-card {
+  border-color: #dbe3ea !important;
+  background: #102a43 !important;
+  color: #ffffff !important;
+  box-shadow: 0 14px 32px rgba(16,42,67,.12) !important;
+}
+
+.pulse-kicker,
+.news-kicker {
+  color: #b9d1e4 !important;
+}
+
+.pulse-copy,
+.pulse-progress-label,
+.pulse-progress-box small,
+.myth-fact-heading p,
+.campaign-heading p:last-child,
+.news-note,
+.news-empty {
+  color: #657588 !important;
+}
+
+.pulse-card .pulse-copy,
+.pulse-card .pulse-progress-label,
+.pulse-card .pulse-progress-box small {
+  color: rgba(255,255,255,.76) !important;
+}
+
+.pulse-next,
+.news-refresh,
+.myth-button {
+  background: #ffffff !important;
+  color: #102a43 !important;
+  border-color: #dbe3ea !important;
+}
+
+.pulse-share {
+  background: rgba(255,255,255,.12) !important;
+  color: #ffffff !important;
+}
+
+.pulse-progress {
+  background: rgba(255,255,255,.18) !important;
+}
+
+.pulse-progress span {
+  background: #b9d1e4 !important;
+}
+
+.myth-fact-section,
+.general-news,
+.campaign-section {
+  color: #19344f !important;
+}
+
+.myth-card,
+.general-news .news-card,
+.campaign-card {
+  border-color: #dbe3ea !important;
+  background: #ffffff !important;
+  color: #19344f !important;
+  box-shadow: 0 8px 22px rgba(16,42,67,.055);
+}
+
+.myth-card h3,
+.campaign-card h3,
+.general-news .news-card h3 {
+  color: #19344f !important;
+}
+
+.myth-answer,
+.campaign-card p,
+.general-news .news-card p,
+.news-meta,
+.campaign-meta {
+  color: #657588 !important;
+}
+
+.myth-badge,
+.news-badge,
+.campaign-meta span {
+  background: #edf3f8 !important;
+  color: #234f78 !important;
+  border-color: #dbe3ea !important;
+}
+
+.myth-button:hover,
+.news-refresh:hover {
+  background: #edf3f8 !important;
+  color: #102a43 !important;
+}
+
+.news-card a,
+.campaign-card a {
+  color: #234f78 !important;
+}
+
+.location-chip {
+  border-color: #d2dce5 !important;
+  color: #526579 !important;
+}
+
+.location-chip:hover {
+  border-color: #7395b4 !important;
+  color: #234f78 !important;
+}
+
+.campaign-empty {
+  border-color: #c8d5df !important;
+  color: #657588 !important;
+}
+
+/* Compact single-item General News carousel */
+.news-wrapper {
+  align-items: flex-start !important;
+}
+
+.general-news {
+  flex: 0 1 560px !important;
+  max-width: 560px !important;
+  padding: 23px !important;
+}
+
+.news-carousel-shell {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 38px;
+  align-items: center;
+  gap: 12px;
+  width: min(100%, 500px);
+  margin: 18px auto 0;
+}
+
+#general-news-container {
+  display: block !important;
+  width: 100%;
+  margin: 0 !important;
+}
+
+.general-news .news-card {
+  width: 100%;
+  min-height: 205px !important;
+  aspect-ratio: 1.35 / 1;
+  justify-content: flex-start;
+  padding: 21px !important;
+  border-radius: 16px !important;
+}
+
+.general-news .news-card h3 {
+  min-height: auto !important;
+  margin-top: 12px;
+}
+
+.general-news .news-card p {
+  -webkit-line-clamp: 3 !important;
+}
+
+.news-arrow {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #d2dce5;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #234f78;
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: transform .2s ease, background .2s ease, border-color .2s ease;
+}
+
+.news-arrow:hover:not(:disabled) {
+  border-color: #7395b4;
+  background: #edf3f8;
+  transform: translateY(-2px);
+}
+
+.news-arrow:disabled {
+  cursor: default;
+  opacity: .42;
+}
+
+.news-carousel-meta {
+  margin-top: 12px;
+  color: #8b98a7;
+  font-size: .72rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .general-news {
+    max-width: none !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .news-carousel-shell {
+    grid-template-columns: 32px minmax(0, 1fr) 32px;
+    gap: 8px;
+  }
+
+  .news-arrow {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .general-news .news-card {
+    min-height: 220px !important;
+    aspect-ratio: auto;
+  }
+}
+
+
+/* Keep the General News panel aligned with the white-card system */
+.general-news {
+  border-color: #dbe3ea !important;
+  background: #ffffff !important;
+  box-shadow: 0 10px 26px rgba(16,42,67,.06) !important;
+}
+
+.general-news .news-heading-row h2,
+.general-news .news-heading-row .news-kicker,
+.general-news .news-note {
+  color: #19344f !important;
+}
+
+.general-news .news-note {
+  color: #657588 !important;
+}
+
+/* Habits / body-awareness readability pass */
+.habits-page { color: #19344f !important; }
+
+.habits-page .habits-intro,
+.habits-page .wellness-audit,
+.habits-page .learning-section,
+.habits-page .quiz-section,
+.habits-page .results-section {
+  border-color: #dbe3ea !important;
+  background: #ffffff !important;
+  color: #19344f !important;
+  box-shadow: 0 12px 30px rgba(16,42,67,.08) !important;
+}
+
+.habits-page .habits-intro h1,
+.habits-page .habits-intro h1 span,
+.habits-page .learning-heading h2,
+.habits-page .quiz-header h2,
+.habits-page .audit-heading h2,
+.habits-page .feel-section h2,
+.habits-page .results-heading h2,
+.habits-page .final-cta h2,
+.habits-page .symptom-panel h3,
+.habits-page .dashboard-card h3,
+.habits-page .action-plan h3 { color: #19344f !important; }
+
+.habits-page .eyebrow,
+.habits-page .audit-label span,
+.habits-page .area-picker-title,
+.habits-page .weekly-progress,
+.habits-page .score-number,
+.habits-page .probability-value,
+.habits-page .symptom-response h4,
+.habits-page .feel-response h4 { color: #234f78 !important; }
+
+.habits-page .habits-intro p:not(.eyebrow),
+.habits-page .audit-heading p:not(.eyebrow),
+.habits-page .learning-heading p:not(.eyebrow),
+.habits-page .quiz-header p:not(.eyebrow),
+.habits-page .audit-result p,
+.habits-page .symptom-panel > p,
+.habits-page .feel-section > p,
+.habits-page .symptom-response p,
+.habits-page .symptom-response li,
+.habits-page .feel-response p,
+.habits-page .probability-card p,
+.habits-page .insight-list li,
+.habits-page .action-item,
+.habits-page .score-category { color: #657588 !important; }
+
+.habits-page .body-layout { grid-template-columns: 1fr !important; }
+
+.habits-page .symptom-panel,
+.habits-page .feel-section,
+.habits-page .dashboard-card,
+.habits-page .action-plan,
+.habits-page .probability-card,
+.habits-page .audit-group,
+.habits-page .audit-result {
+  border-color: #dbe3ea !important;
+  background: #f7f9fb !important;
+  color: #19344f !important;
+}
+
+.habits-page .area-button,
+.habits-page .audit-choice,
+.habits-page .quiz-option,
+.habits-page .feel-suggestions button,
+.habits-page .quiz-navigation button,
+.habits-page .symptom-option {
+  border-color: #d2dce5 !important;
+  background: #ffffff !important;
+  color: #526579 !important;
+}
+
+.habits-page .area-button:hover,
+.habits-page .area-button.selected,
+.habits-page .audit-choice:hover,
+.habits-page .audit-choice.active,
+.habits-page .quiz-option:hover,
+.habits-page .quiz-option.selected,
+.habits-page .symptom-option:hover,
+.habits-page .symptom-option.selected {
+  border-color: #7395b4 !important;
+  background: #edf3f8 !important;
+  color: #19344f !important;
+}
+
+.habits-page .symptom-textarea,
+.habits-page .feel-textarea,
+.habits-page .body-awareness-fields select {
+  border-color: #d2dce5 !important;
+  background: #ffffff !important;
+  color: #19344f !important;
+}
+
+.habits-page .symptom-textarea::placeholder,
+.habits-page .feel-textarea::placeholder { color: #8b98a7 !important; }
+
+.habits-page .symptom-response,
+.habits-page .feel-response,
+.habits-page .body-connect-box {
+  border-color: #b9cddd !important;
+  background: #edf3f8 !important;
+}
+
+.habits-page .habits-button,
+.habits-page .quiz-navigation button.primary {
+  border-color: #102a43 !important;
+  background: #102a43 !important;
+  color: #ffffff !important;
+}
+
+.habits-page .habits-button.secondary {
+  border-color: #7395b4 !important;
+  background: #ffffff !important;
+  color: #234f78 !important;
+}
+
+.habits-page .final-cta {
+  border-color: #183b5b !important;
+  background: #102a43 !important;
+  color: #ffffff !important;
+}
+
+.habits-page .final-cta h2 { color: #ffffff !important; }
+.habits-page .final-cta p { color: #d6e2ec !important; }
+.habits-page .progress-track,
+.habits-page .metric-track { background: #e2e8ee !important; }
+.habits-page .progress-bar,
+.habits-page .metric-value { background: #234f78 !important; }
+.habits-page .good-list li::before { color: #234f78 !important; }
+

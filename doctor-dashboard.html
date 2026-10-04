@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    if (window.location.protocol === "file:") {
+      const localBase = document.createElement("base");
+      localBase.href = "http://localhost:3000/";
+      document.head.appendChild(localBase);
+    }
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediConnect | Doctor Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    .dashboard-page {
+      margin: 0 auto;
+      max-width: 1120px;
+      padding: 42px 18px 70px;
+    }
+
+    .dashboard-heading {
+      align-items: flex-start;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .dashboard-heading h1 {
+      color: #f4f8fa;
+      font-size: 2rem;
+      margin: 0 0 7px;
+    }
+
+    .dashboard-heading p {
+      color: #a9bbc5;
+      font-size: 0.8rem;
+      margin: 0;
+    }
+
+    .provider-status {
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 7px 11px;
+    }
+
+    .provider-status.pending,
+    .provider-status.under-review {
+      background: rgba(161, 98, 7, 0.17);
+      color: #fde68a;
+    }
+
+    .provider-status.verified {
+      background: rgba(21, 128, 61, 0.17);
+      color: #bbf7d0;
+    }
+
+    .provider-status.rejected,
+    .provider-status.correction-required {
+      background: rgba(185, 28, 28, 0.17);
+      color: #fecaca;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .dashboard-card {
+      background: rgba(8, 35, 51, 0.92);
+      border: 1px solid rgba(193, 224, 232, 0.18);
+      border-radius: 14px;
+      padding: 23px;
+    }
+
+    .dashboard-card.full {
+      grid-column: 1 / -1;
+    }
+
+    .dashboard-card h2 {
+      color: #78dfc5;
+      font-size: 1.08rem;
+      margin: 0 0 6px;
+    }
+
+    .dashboard-card > p {
+      color: #a9bbc5;
+      font-size: 0.75rem;
+      line-height: 1.6;
+      margin: 0 0 20px;
+    }
+
+    .provider-summary {
+      align-items: center;
+      display: flex;
+      gap: 14px;
+    }
+
+    .provider-avatar {
+      align-items: center;
+      background: rgba(120, 223, 197, 0.14);
+      border: 1px solid rgba(120, 223, 197, 0.25);
+      border-radius: 12px;
+      color: #a8f2dc;
+      display: grid;
+      font-size: 1rem;
+      font-weight: 700;
+      height: 55px;
+      justify-content: center;
+      width: 55px;
+    }
+
+    .provider-summary h3 {
+      color: #f4f8fa;
+      font-size: 1rem;
+      margin: 0 0 4px;
+    }
+
+    .provider-summary p {
+      color: #a9bbc5;
+      font-size: 0.74rem;
+      margin: 0;
+    }
+
+    .provider-summary .ai-verification-note {
+      color: #78dfc5;
+      font-size: 0.66rem;
+      margin-top: 4px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 0 13px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      color: #c8d9de;
+      display: block;
+      font-size: 0.71rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: rgba(0, 0, 0, 0.17);
+      border: 1px solid rgba(193, 224, 232, 0.2);
+      border-radius: 7px;
+      color: #f4f8fa;
+      outline: none;
+      padding: 10px 11px;
+      width: 100%;
+    }
+
+    .form-group textarea {
+      min-height: 82px;
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: #2bb89b;
+      box-shadow: 0 0 0 3px rgba(43, 184, 155, 0.1);
+    }
+
+    .form-group select option {
+      background: #edf6f5;
+      color: #122b3a;
+    }
+
+    .button {
+      background: #a8f2dc;
+      border: 0;
+      border-radius: 7px;
+      color: #123e40;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 10px 14px;
+    }
+
+    .button.secondary {
+      background: rgba(168, 242, 220, 0.12);
+      border: 1px solid rgba(168, 242, 220, 0.24);
+      color: #a8f2dc;
+    }
+
+    .button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .document-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .document-row {
+      align-items: center;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(193, 224, 232, 0.13);
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      padding: 11px;
+    }
+
+    .document-row strong {
+      color: #d1e1e6;
+      display: block;
+      font-size: 0.73rem;
+    }
+
+    .document-row span {
+      color: #78919d;
+      display: block;
+      font-size: 0.66rem;
+      margin-top: 2px;
+    }
+
+    .document-row a {
+      color: #a8f2dc;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .upload-field {
+      background: rgba(43, 184, 155, 0.06);
+      border: 1px dashed rgba(120, 223, 197, 0.34);
+      border-radius: 8px;
+      margin-top: 15px;
+      padding: 12px;
+    }
+
+    .upload-field small {
+      color: #78919d;
+      display: block;
+      font-size: 0.65rem;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .upload-field input {
+      color: #c8d9de;
+      font-size: 0.7rem;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 5px;
+    }
+
+    .message {
+      border-radius: 7px;
+      display: none;
+      font-size: 0.73rem;
+      line-height: 1.5;
+      margin-bottom: 14px;
+      padding: 10px;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.success {
+      background: rgba(21, 128, 61, 0.15);
+      color: #bbf7d0;
+    }
+
+    .message.error {
+      background: rgba(185, 28, 28, 0.15);
+      color: #fecaca;
+    }
+
+    .empty-state {
+      color: #78919d;
+      font-size: 0.76rem;
+      padding: 22px 0;
+    }
+
+    @media (max-width: 760px) {
+      .dashboard-heading {
+        display: block;
+      }
+
+      .provider-status {
+        display: inline-block;
+        margin-top: 13px;
+      }
+
+      .dashboard-grid,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-card.full,
+      .form-group.full {
+        grid-column: auto;
+      }
+    }
+    .conversation-heading {
+      align-items: flex-start;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .conversation-layout {
+      display: grid;
+      grid-template-columns: minmax(220px, .7fr) 1.3fr;
+      gap: 14px;
+    }
+
+    .conversation-list,
+    .conversation-thread {
+      min-height: 260px;
+      border: 1px solid rgba(193,224,232,.13);
+      border-radius: 9px;
+      background: rgba(255,255,255,.03);
+      padding: 10px;
+    }
+
+    .conversation-item {
+      width: 100%;
+      padding: 11px;
+      color: #c8d9de;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .conversation-item:hover,
+    .conversation-item.active {
+      border-color: rgba(120,223,197,.3);
+      background: rgba(43,184,155,.1);
+    }
+
+    .conversation-item strong,
+    .conversation-item small {
+      display: block;
+    }
+
+    .conversation-item strong { font-size: .76rem; }
+    .conversation-item small { color: #78919d; margin-top: 3px; font-size: .66rem; }
+
+    .thread-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 5px 4px 10px;
+      border-bottom: 1px solid rgba(193,224,232,.13);
+    }
+
+    .thread-header strong { color: #f4f8fa; font-size: .8rem; }
+    .thread-header span { color: #78919d; font-size: .66rem; }
+    .thread-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+
+    .thread-messages {
+      display: grid;
+      gap: 8px;
+      max-height: 260px;
+      overflow-y: auto;
+      padding: 12px 3px;
+    }
+
+    .thread-message {
+      max-width: 82%;
+      padding: 9px 10px;
+      border-radius: 8px;
+      color: #d1e1e6;
+      background: rgba(255,255,255,.06);
+      font-size: .72rem;
+      line-height: 1.5;
+    }
+
+    .thread-message.mine {
+      justify-self: end;
+      color: #123e40;
+      background: #a8f2dc;
+    }
+
+    .thread-composer {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .thread-composer textarea {
+      min-height: 42px;
+      resize: vertical;
+      background: rgba(0,0,0,.17);
+      border: 1px solid rgba(193,224,232,.2);
+      border-radius: 7px;
+      color: #f4f8fa;
+      padding: 9px;
+      width: 100%;
+    }
+
+    @media (max-width: 760px) {
+      .conversation-heading { display: block; }
+      .conversation-heading .button { margin-top: 12px; }
+      .conversation-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="site-shell.css">
+</head>
+
+<body>
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="doctors.html">Find Care</a></li>
+      <li><a href="vaccination.html">Vaccination Updates</a></li>
+      <li><a href="chatbot.html">MediGuide</a></li>
+      <li><a href="habits.html">Healthy Habits</a></li>
+    </ul>
+  </nav>
+
+  <main class="dashboard-page">
+    <section class="dashboard-heading">
+      <div>
+        <h1>Provider dashboard</h1>
+        <p>Manage your professional information and patient communication.</p>
+      </div>
+
+      <span class="provider-status" id="providerStatus">Loading status</span>
+    </section>
+
+    <div id="dashboardMessage" class="message"></div>
+
+    <section class="dashboard-grid">
+      <article class="dashboard-card">
+        <h2>Profile status</h2>
+        <p>Your public listing becomes available after administrative verification.</p>
+
+        <div class="provider-summary">
+          <div class="provider-avatar" id="providerAvatar">--</div>
+          <div>
+            <h3 id="providerName">Loading...</h3>
+            <p id="providerType">Loading provider details...</p>
+            <p id="aiVerification" class="ai-verification-note">Verification status: loading...</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="dashboard-card">
+        <h2>Contact preferences</h2>
+        <p>Choose how patients may contact your verified profile.</p>
+
+        <form id="contactForm">
+          <div class="form-group">
+            <label for="allowCalls">Direct calls</label>
+            <select id="allowCalls" name="allowCalls">
+              <option value="true">Available</option>
+              <option value="false">Not available</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="allowMessages">Messages / WhatsApp</label>
+            <select id="allowMessages" name="allowMessages">
+              <option value="true">Available</option>
+              <option value="false">Not available</option>
+            </select>
+          </div>
+        </form>
+      </article>
+
+      <article class="dashboard-card full">
+        <h2>Professional profile</h2>
+        <p>Keep this information accurate so patients can make informed contact decisions.</p>
+
+        <form id="profileForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="name">Name / organization</label>
+              <input id="name" name="name" required />
+            </div>
+
+            <div class="form-group">
+              <label for="speciality">Speciality / service</label>
+              <input id="speciality" name="speciality" required />
+            </div>
+
+            <div class="form-group">
+              <label for="registrationNumber">License / registration number</label>
+              <input id="registrationNumber" name="registrationNumber" required />
+            </div>
+
+            <div class="form-group">
+              <label for="experience">Experience in years</label>
+              <input id="experience" name="experience" type="number" min="0" />
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Official contact number</label>
+              <input id="phone" name="phone" type="tel" placeholder="Example: +91 98765 43210" required />
+            </div>
+
+            <div class="form-group">
+              <label for="website">Official website</label>
+              <input id="website" name="website" type="url" />
+            </div>
+
+            <div class="form-group">
+              <label for="city">City</label>
+              <input id="city" name="city" required />
+            </div>
+
+            <div class="form-group">
+              <label for="state">State</label>
+              <input id="state" name="state" required />
+            </div>
+
+            <div class="form-group">
+              <label for="pincode">Pincode</label>
+              <input id="pincode" name="pincode" required />
+            </div>
+
+            <div class="form-group">
+              <label for="consultationMode">Consultation mode</label>
+              <select id="consultationMode" name="consultationMode">
+                <option value="Clinic Visit">Clinic Visit</option>
+                <option value="Online Consultation">Online Consultation</option>
+                <option value="Home Visit">Home Visit</option>
+                <option value="Multiple Modes">Multiple Modes</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="workingHours">Working hours</label>
+              <input id="workingHours" name="workingHours" />
+            </div>
+
+            <div class="form-group">
+              <label for="languages">Languages spoken</label>
+              <input id="languages" name="languages" placeholder="English, Hindi, Marathi" required />
+            </div>
+
+            <div class="form-group full">
+              <label for="address">Complete address</label>
+              <textarea id="address" name="address" required></textarea>
+            </div>
+
+            <div class="form-group full">
+              <label for="about">Professional description</label>
+              <textarea id="about" name="about"></textarea>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="button" type="submit" id="profileButton">Save profile</button>
+          </div>
+        </form>
+      </article>
+
+      <article class="dashboard-card full">
+        <div class="conversation-heading">
+          <div>
+            <h2>Patient requests and conversations</h2>
+            <p>Review consultation requests and reply only within conversations assigned to your provider account.</p>
+          </div>
+          <button class="button secondary" type="button" id="refreshConversations">Refresh</button>
+        </div>
+        <div class="conversation-layout">
+          <div class="conversation-list" id="conversationList">
+            <div class="empty-state">Loading conversations...</div>
+          </div>
+          <div class="conversation-thread" id="conversationThread">
+            <div class="empty-state">Select a conversation to view messages.</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="dashboard-card full">
+        <div class="conversation-heading">
+          <div>
+            <h2>Callback requests</h2>
+            <p>Review patients who have requested a phone callback from your verified profile.</p>
+          </div>
+          <button class="button secondary" type="button" id="refreshCallRequests">Refresh</button>
+        </div>
+        <div class="queue-list" id="callRequestList">
+          <div class="empty-state">Loading callback requests...</div>
+        </div>
+      </article>    </section>
+  </main>
+
+  <script>
+    let providerData = null;
+
+    function showMessage(message, type) {
+      const element = document.getElementById("dashboardMessage");
+      element.className = `message show ${type}`;
+      element.textContent = message;
+    }
+
+    function initials(name) {
+      return String(name || "Provider")
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((word) => word[0])
+        .join("")
+        .toUpperCase();
+    }
+
+    function setValue(id, value) {
+      const element = document.getElementById(id);
+      if (element) element.value = value ?? "";
+    }
+
+    function formatStatus(status) {
+      return String(status || "Pending").toLowerCase().replaceAll(" ", "-");
+    }
+
+    async function loadProviderProfile() {
+      const identityResponse = await fetch("/api/auth/me", { credentials: "include" });
+      const identity = await identityResponse.json().catch(() => ({}));
+
+      if (identityResponse.status === 401) {
+        window.location.href = "login.html?redirect=doctor-dashboard.html";
+        return;
+      }
+
+      if (!identityResponse.ok || identity.role !== "doctor") {
+        window.location.href = "index.html";
+        return;
+      }
+
+      const response = await fetch("/api/provider/me", {
+        credentials: "include"
+      });
+
+      if (response.status === 401 || response.status === 403) {
+        window.location.href = "login.html?redirect=doctor-dashboard.html";
+        return;
+      }
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Provider profile could not be loaded.");
+      }
+
+      providerData = { ...data.provider, userId: data.user?.id };
+
+      document.getElementById("providerName").textContent = providerData.name || "Provider";
+      document.getElementById("providerType").textContent = `${providerData.type || "Provider"} · ${providerData.speciality || "Service not specified"}`;
+      document.getElementById("aiVerification").textContent = `Verification status: ${providerData.aiVerificationStatus || "not configured"}. Final approval requires authorized administrative review.`;
+      document.getElementById("providerAvatar").textContent = initials(providerData.name);
+
+      const status = document.getElementById("providerStatus");
+      status.textContent = providerData.status || "Pending";
+      status.className = `provider-status ${formatStatus(providerData.status)}`;
+
+      setValue("name", providerData.name);
+      setValue("speciality", providerData.speciality);
+      setValue("registrationNumber", providerData.registrationNumber);
+      setValue("experience", providerData.experience);
+      setValue("phone", providerData.phone);
+      setValue("website", providerData.website);
+      setValue("city", providerData.city);
+      setValue("state", providerData.state);
+      setValue("pincode", providerData.pincode);
+      setValue("consultationMode", providerData.consultationMode);
+      setValue("workingHours", providerData.workingHours);
+      setValue("languages", (providerData.languages || []).join(", "));
+      setValue("address", providerData.address);
+      setValue("about", providerData.about);
+      setValue("allowCalls", String(providerData.allowCalls));
+      setValue("allowMessages", String(providerData.allowMessages));
+
+    }
+
+    document.getElementById("profileForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const button = document.getElementById("profileButton");
+      button.disabled = true;
+      button.textContent = "Saving...";
+
+      try {
+        const formData = new FormData(event.target);
+        formData.set("allowCalls", document.getElementById("allowCalls").value);
+        formData.set("allowMessages", document.getElementById("allowMessages").value);
+
+        const payload = Object.fromEntries(formData.entries());
+        payload.languages = payload.languages
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean);
+
+        const response = await fetch("/api/provider/me", {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Profile could not be updated.");
+        }
+
+        showMessage(data.message, "success");
+        await loadProviderProfile();
+      } catch (error) {
+        showMessage(error.message, "error");
+      } finally {
+        button.disabled = false;
+        button.textContent = "Save profile";
+      }
+    });
+
+    let conversations = [];
+    let selectedConversation = null;
+
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function loadConversations() {
+      const list = document.getElementById("conversationList");
+      try {
+        const response = await fetch("/api/consultations", { credentials: "include" });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || "Conversations could not be loaded.");
+        conversations = data;
+        if (!conversations.length) {
+          list.innerHTML = '<div class="empty-state">No patient conversations yet.</div>';
+          document.getElementById("conversationThread").innerHTML = '<div class="empty-state">Patient requests will appear here after they contact your verified profile.</div>';
+          return;
+        }
+        list.innerHTML = conversations.map((item) => `<button class="conversation-item ${selectedConversation === item.id ? "active" : ""}" data-conversation-id="${escapeHTML(item.id)}" type="button"><strong>${escapeHTML(item.patientName || "Patient request")}</strong><small>${escapeHTML(item.status)} · ${new Date(item.createdAt).toLocaleString("en-IN")}</small></button>`).join("");
+        list.querySelectorAll("[data-conversation-id]").forEach((button) => button.addEventListener("click", () => openConversation(button.dataset.conversationId)));
+        if (!selectedConversation) await openConversation(conversations[0].id);
+      } catch (error) {
+        list.innerHTML = `<div class="empty-state">${escapeHTML(error.message)}</div>`;
+      }
+    }
+
+    async function openConversation(id) {
+      selectedConversation = id;
+      const conversation = conversations.find((item) => item.id === id);
+      if (!conversation) return;
+      document.querySelectorAll(".conversation-item").forEach((button) => button.classList.toggle("active", button.dataset.conversationId === id));
+      const thread = document.getElementById("conversationThread");
+      thread.innerHTML = '<div class="empty-state">Loading messages...</div>';
+      try {
+        const response = await fetch(`/api/consultations/${encodeURIComponent(id)}/messages`, { credentials: "include" });
+        const messages = await response.json();
+        if (!response.ok) throw new Error(messages.message || "Messages could not be loaded.");
+        thread.innerHTML = `<div class="thread-header"><div><strong>${escapeHTML(conversation.patientName || "Patient")}</strong><span>${escapeHTML(conversation.status)} · ${escapeHTML(conversation.message || "Consultation request")}</span></div><div class="thread-actions"><button class="button" type="button" data-status-action="accepted" ${conversation.status !== "requested" ? "disabled" : ""}>Accept request</button><button class="button danger" type="button" data-status-action="declined" ${!["requested", "accepted"].includes(conversation.status) ? "disabled" : ""}>Decline</button><button class="button secondary" type="button" data-status-action="completed" ${conversation.status !== "accepted" ? "disabled" : ""}>Mark completed</button></div></div><div class="thread-messages">${messages.length ? messages.map((item) => `<div class="thread-message ${item.senderId === providerData?.userId ? "mine" : ""}">${escapeHTML(item.body)}</div>`).join("") : '<div class="empty-state">No messages yet.</div>'}</div><form class="thread-composer" id="threadComposer"><textarea id="threadBody" maxlength="4000" placeholder="Write a professional reply..." required></textarea><button class="button" type="submit">Send</button></form>`;
+        document.querySelectorAll("[data-status-action]").forEach((button) => button.addEventListener("click", () => updateConversation(id, button.dataset.statusAction)));
+        document.getElementById("threadComposer")?.addEventListener("submit", sendThreadMessage);
+      } catch (error) {
+        thread.innerHTML = `<div class="empty-state">${escapeHTML(error.message)}</div>`;
+      }
+    }
+
+    async function updateConversation(id, status) {
+      const response = await fetch(`/api/consultations/${encodeURIComponent(id)}`, { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
+      const data = await response.json();
+      if (!response.ok) return showMessage(data.message || "Conversation could not be updated.", "error");
+      await loadConversations();
+      await openConversation(id);
+    }
+
+    async function sendThreadMessage(event) {
+      event.preventDefault();
+      const body = document.getElementById("threadBody").value.trim();
+      if (!body || !selectedConversation) return;
+      const response = await fetch(`/api/consultations/${encodeURIComponent(selectedConversation)}/messages`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ body }) });
+      const data = await response.json();
+      if (!response.ok) return showMessage(data.message || "Message could not be sent.", "error");
+      await openConversation(selectedConversation);
+    }
+
+    async function loadCallRequests() {
+      const list = document.getElementById("callRequestList");
+      try {
+        const response = await fetch("/api/call-requests", { credentials: "include" });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || "Callback requests could not be loaded.");
+        if (!data.length) {
+          list.innerHTML = '<div class="empty-state">No callback requests yet.</div>';
+          return;
+        }
+        list.innerHTML = data.map((item) => `<div class="queue-card">
+          <div class="queue-card-header"><div><strong>${escapeHTML(item.patientName || "Patient")}</strong><small>${escapeHTML(item.status)} · ${new Date(item.createdAt).toLocaleString("en-IN")}</small></div><span class="provider-status">${escapeHTML(item.status)}</span></div>
+          <p>${escapeHTML(item.message || "The patient requested a phone callback.")}</p>
+          <p><strong>Preferred time:</strong> ${escapeHTML(item.preferredTime || "Not specified")}</p>
+          <div class="queue-actions"><a class="button secondary" href="tel:${escapeHTML(item.patientPhone || "")}">Call patient</a><button class="button" type="button" data-call-status="accepted" data-call-id="${escapeHTML(item.id)}">Accept</button><button class="button secondary" type="button" data-call-status="completed" data-call-id="${escapeHTML(item.id)}">Mark completed</button><button class="button danger" type="button" data-call-status="declined" data-call-id="${escapeHTML(item.id)}">Decline</button></div>
+        </div>`).join("");
+        list.querySelectorAll("[data-call-status]").forEach((button) => button.addEventListener("click", () => updateCallRequest(button.dataset.callId, button.dataset.callStatus)));
+      } catch (error) {
+        list.innerHTML = `<div class="empty-state">${escapeHTML(error.message)}</div>`;
+      }
+    }
+
+    async function updateCallRequest(id, status) {
+      const response = await fetch(`/api/call-requests/${encodeURIComponent(id)}`, { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
+      const data = await response.json();
+      if (!response.ok) return showMessage(data.message || "Callback request could not be updated.", "error");
+      showMessage("Callback request updated.", "success");
+      loadCallRequests();
+    }
+
+    document.getElementById("refreshCallRequests")?.addEventListener("click", loadCallRequests);
+    setInterval(() => { loadConversations(); loadCallRequests(); }, 15000);
+    document.getElementById("refreshConversations")?.addEventListener("click", loadConversations);
+    loadProviderProfile().then(() => Promise.all([loadConversations(), loadCallRequests()])).catch((error) => {
+
+      showMessage(error.message, "error");
+    });
+  </script>
+  <script src="site-shell.js"></script>
+</body>
+</html>
